@@ -40,7 +40,12 @@ export function Editor({ enabledLanguages, files, onChange, intellisenseEnabled 
   if (!active) return <p>Bu ödevde etkin bir kod sekmesi yok.</p>
 
   return (
-    <section aria-label="Kod editörü">
+    <section aria-label="Kod editörü" onKeyDownCapture={(event) => {
+      if (!intellisenseEnabled && (event.ctrlKey || event.metaKey) && event.code === 'Space') {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+    }}>
       <div aria-label="Kod dilleri">
         {enabledLanguages.map((language) => (
           <button key={language} type="button" aria-pressed={language === active} onClick={() => setSelected(language)}>
@@ -61,16 +66,6 @@ export function Editor({ enabledLanguages, files, onChange, intellisenseEnabled 
           parameterHints: { enabled: intellisenseEnabled },
           inlineSuggest: { enabled: intellisenseEnabled },
           tabCompletion: intellisenseEnabled ? 'on' : 'off',
-        }}
-        beforeMount={(instance) => {
-          instance.languages.typescript.javascriptDefaults.setEagerModelSync(true)
-        }}
-        onMount={(editor, instance) => {
-          editor.addCommand(instance.KeyMod.CtrlCmd | instance.KeyCode.Space, () => {
-            if (editor.getRawOptions().quickSuggestions !== false) {
-              editor.trigger('keyboard', 'editor.action.triggerSuggest', {})
-            }
-          })
         }}
       />
     </section>
