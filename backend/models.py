@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, JSON, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
@@ -12,6 +12,7 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(200))
     email: Mapped[str] = mapped_column(String(320), unique=True)
     role: Mapped[str] = mapped_column(String(20))
+    recording_consent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class Course(Base):
@@ -41,3 +42,35 @@ class Assignment(Base):
     intellisense_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     paste_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class Draft(Base):
+    __tablename__ = 'drafts'
+    __table_args__ = (UniqueConstraint('assignment_id', 'student_id'),)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    assignment_id: Mapped[int] = mapped_column(ForeignKey('assignments.id'))
+    student_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+    initial_code: Mapped[dict] = mapped_column(JSON)
+    code: Mapped[dict] = mapped_column(JSON)
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    paste_blocked_count: Mapped[int] = mapped_column(Integer, default=0)
+    blur_count: Mapped[int] = mapped_column(Integer, default=0)
+    max_insert_chars: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class ReplayEvent(Base):
+    __tablename__ = 'replay_events'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    draft_id: Mapped[int] = mapped_column(ForeignKey('drafts.id'))
+    t_ms: Mapped[int] = mapped_column(Integer)
+    kind: Mapped[str] = mapped_column(String(30))
+    payload: Mapped[dict] = mapped_column(JSON)
+
+
+class ReplayBatch(Base):
+    __tablename__ = 'replay_batches'
+    __table_args__ = (UniqueConstraint('draft_id', 'batch_id'),)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    draft_id: Mapped[int] = mapped_column(ForeignKey('drafts.id'))
+    batch_id: Mapped[str] = mapped_column(String(36))

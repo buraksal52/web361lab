@@ -69,6 +69,8 @@ Each event has: time (ms, relative to the session), kind (`edit`, `paste_blocked
 
 Starter code, drafts and submissions contain separate code for each language. Edit events identify the language they modify; preview and analysis use the enabled tabs.
 
+For editor changes, `payload` contains `language` and `changes`, each with Monaco's UTF-16 `rangeOffset`, `rangeLength`, and inserted `text`. Drafts keep their original starter code so replay remains stable if the assignment is edited. Draft code and event batches are saved atomically; a batch ID makes retries idempotent. The server requires student consent and course enrollment before creating or recording a draft. The student and the course instructor may read replay data.
+
 ## 5. Checker and rubric
 
 Check rules are defined with fields (the instructor never writes selectors) and stored in this form:

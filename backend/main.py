@@ -8,8 +8,10 @@ from identity import bearer, current_user, provider, require_enrollment
 from fastapi.security import HTTPAuthorizationCredentials
 from models import Assignment, Course, Enrollment, User
 from schemas import AssignmentInput, AssignmentOut
+from drafts import router as drafts_router
 
 app = FastAPI()
+app.include_router(drafts_router)
 app.add_middleware(CORSMiddleware, allow_origins=['http://localhost:5173', 'http://127.0.0.1:5173'], allow_methods=['GET', 'POST', 'PUT'], allow_headers=['Authorization', 'Content-Type'])
 
 

@@ -29,12 +29,14 @@ const labels: Record<Language, string> = {
 type EditorProps = {
   enabledLanguages: Language[]
   files: CodeFiles
-  onChange: (language: Language, value: string) => void
+  onChange: (language: Language, value: string, event: monaco.editor.IModelContentChangedEvent) => void
   intellisenseEnabled: boolean
   pasteEnabled?: boolean
+  onPasteBlocked?: () => void
+  modelNamespace?: string
 }
 
-export function Editor({ enabledLanguages, files, onChange, intellisenseEnabled, pasteEnabled = true }: EditorProps) {
+export function Editor({ enabledLanguages, files, onChange, intellisenseEnabled, pasteEnabled = true, onPasteBlocked, modelNamespace = 'assignment' }: EditorProps) {
   const [selected, setSelected] = useState<Language | undefined>(enabledLanguages[0])
   const [notice, setNotice] = useState('')
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
@@ -53,12 +55,14 @@ export function Editor({ enabledLanguages, files, onChange, intellisenseEnabled,
         event.preventDefault()
         event.stopPropagation()
         setNotice('Dışarıdan yapıştırma bu ödevde kapalı.')
+        onPasteBlocked?.()
       }
     }} onDropCapture={(event) => {
       if (!pasteEnabled) {
         event.preventDefault()
         event.stopPropagation()
         setNotice('Sürükleyerek metin bırakma bu ödevde kapalı.')
+        onPasteBlocked?.()
       }
     }} onDragOverCapture={(event) => { if (!pasteEnabled) event.preventDefault() }} onKeyDownCapture={(event) => {
       if (!intellisenseEnabled && (event.ctrlKey || event.metaKey) && event.code === 'Space') {
@@ -76,10 +80,10 @@ export function Editor({ enabledLanguages, files, onChange, intellisenseEnabled,
       {notice && <p role="status">{notice}</p>}
       <MonacoEditor
         height="60vh"
-        path={`assignment.${active === 'javascript' ? 'js' : active}`}
+        path={`${modelNamespace}.${active === 'javascript' ? 'js' : active}`}
         language={active}
         value={files[active]}
-        onChange={(value) => onChange(active, value ?? '')}
+        onChange={(value, event) => onChange(active, value ?? '', event)}
         onMount={(editor) => { editorRef.current = editor }}
         options={{
           quickSuggestions: intellisenseEnabled,

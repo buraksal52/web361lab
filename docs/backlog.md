@@ -43,12 +43,12 @@ Status values: `todo`, `in progress`, `done`, `blocked`.
 
 | ID | Item | Refs | Status |
 |---|---|---|---|
-| S3-01 | First-login notice and consent screen (recording must not start before consent) | FR-12, NFR-02 | todo |
-| S3-02 | Automatic draft saving and restoring | FR-06 | todo |
-| S3-03 | Replay event recorder (`edit`, `paste_blocked`, `blur`, `focus`), batched sending | FR-07, NFR-04, ADR-04 | todo |
-| S3-04 | Replay event storage API | FR-07 | todo |
-| S3-05 | Signal counters (blocked pastes, blur count, largest insertion) | FR-11 | todo |
-| S3-06 | Tests: events rebuild the same code; no recording without consent; draft survives a refresh | FR-06, FR-07, FR-12 | todo |
+| S3-01 | First-login notice and consent screen (recording must not start before consent) | FR-12, NFR-02 | done |
+| S3-02 | Automatic draft saving and restoring | FR-06 | done |
+| S3-03 | Replay event recorder (`edit`, `paste_blocked`, `blur`, `focus`), batched sending | FR-07, NFR-04, ADR-04 | done |
+| S3-04 | Replay event storage API | FR-07 | done |
+| S3-05 | Signal counters (blocked pastes, blur count, largest insertion) | FR-11 | done |
+| S3-06 | Tests: events rebuild the same code; no recording without consent; draft survives a refresh | FR-06, FR-07, FR-12 | done |
 
 ## S4: Submission + instructor screen
 

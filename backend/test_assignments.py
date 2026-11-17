@@ -1,4 +1,5 @@
 import pytest
+from uuid import uuid4
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -53,3 +54,43 @@ def test_assignment_access_and_editing(client):
     assert client.put(f'/assignments/{assignment_id}', json=payload, headers=teacher).json()['title'] == 'Updated'
     assert client.post('/demo/logout', headers=teacher).status_code == 200
     assert client.get('/courses', headers=teacher).status_code == 401
+
+
+def test_draft_recording_requires_consent_and_is_private(client):
+    teacher, student, outsider = auth(client, 1), auth(client, 2), auth(client, 3)
+    payload = {'course_id': 1, 'title': 'Form', 'enabled_languages': ['html'], 'starter_code': {'html': '😀', 'css': '', 'javascript': ''}}
+    assignment_id = client.post('/assignments', json=payload, headers=teacher).json()['id']
+    draft_url = f'/assignments/{assignment_id}/draft'
+    assert client.post(draft_url, headers=student).status_code == 403
+    before_consent = {'batch_id': str(uuid4()), 'code': {'html': '😀', 'css': '', 'javascript': ''}, 'events': [{'t_ms': 0, 'kind': 'blur', 'payload': {}}]}
+    assert client.post(f'{draft_url}/batches', json=before_consent, headers=student).status_code == 403
+    assert client.get(f'/assignments/{assignment_id}/students/2/replay', headers=teacher).status_code == 404
+    assert client.post('/me/recording-consent', headers=student).status_code == 200
+    assert client.post(draft_url, headers=outsider).status_code == 403
+    assert client.post(draft_url, headers=teacher).status_code == 403
+    assert client.post(draft_url, headers=student).json()['code']['html'] == '😀'
+
+    batch = {'batch_id': str(uuid4()), 'code': {'html': '😀ok', 'css': '', 'javascript': ''}, 'events': [
+        {'t_ms': 10, 'kind': 'edit', 'payload': {'language': 'html', 'changes': [{'rangeOffset': 2, 'rangeLength': 0, 'text': 'ok'}]}},
+        {'t_ms': 11, 'kind': 'paste_blocked', 'payload': {}},
+        {'t_ms': 12, 'kind': 'blur', 'payload': {}},
+    ]}
+    saved = client.post(f'{draft_url}/batches', json=batch, headers=student)
+    assert saved.status_code == 200
+    assert saved.json()['signals'] == {'paste_blocked_count': 1, 'blur_count': 1, 'max_insert_chars': 2}
+    assert client.post(f'{draft_url}/batches', json=batch, headers=student).json()['signals'] == saved.json()['signals']
+    assert client.post(draft_url, headers=student).json()['code']['html'] == '😀ok'
+    replay_url = f'/assignments/{assignment_id}/students/2/replay'
+    assert client.get(replay_url, headers=outsider).status_code == 403
+    replay = client.get(replay_url, headers=teacher).json()
+    assert replay['initial_code']['html'] == '😀'
+    assert len(replay['events']) == 3
+    change = replay['events'][0]['payload']['changes'][0]
+    original = replay['initial_code']['html'].encode('utf-16-le')
+    start = change['rangeOffset'] * 2
+    end = start + change['rangeLength'] * 2
+    assert (original[:start] + change['text'].encode('utf-16-le') + original[end:]).decode('utf-16-le') == replay['code']['html']
+
+    invalid = {'batch_id': str(uuid4()), 'code': {'html': 'changed', 'css': '', 'javascript': ''}, 'events': []}
+    assert client.post(f'{draft_url}/batches', json=invalid, headers=student).status_code == 400
+    assert client.get(replay_url, headers=student).json()['code']['html'] == '😀ok'
