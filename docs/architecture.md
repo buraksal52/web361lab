@@ -1,0 +1,98 @@
+# Architecture
+
+## 1. Overview
+
+```
+Browser (Teams tab or direct)
+┌──────────────────────────────────────────────────┐
+│ Frontend (React + TypeScript + Vite)             │
+│  ├─ Editor (Monaco) ── settings: IntelliSense,   │
+│  │                     paste, live diagnostics   │
+│  ├─ Preview (sandboxed iframe, srcdoc)           │
+│  ├─ Side panel (Markdown)                        │
+│  ├─ Replay recorder / player                     │
+│  ├─ Checker + writing checks (static analysis)   │
+│  ├─ Instructor screens: assignment creation,     │
+│  │   rubric, reports                             │
+│  └─ Identity interface (IdentityProvider)        │
+└───────────────┬──────────────────────────────────┘
+                │ HTTPS + token (Bearer)
+┌───────────────▼──────────────────────────────────┐
+│ Backend (FastAPI)                                │
+│  ├─ Auth: IdentityProvider (MVP: demo mode)      │
+│  ├─ Assignment / submission / draft / rubric API │
+│  ├─ Replay event intake and queries              │
+│  ├─ CSV export                                   │
+│  └─ Database (SQLite, can move to Postgres later)│
+└──────────────────────────────────────────────────┘
+```
+
+Code is never executed on the server. HTML/CSS/JS runs in the sandboxed iframe in the browser. The checker and linter do **not run** code, they only parse it. The server stores assignment, draft, submission, replay and evaluation data.
+
+## 2. Components
+
+| Component | Responsibility |
+|---|---|
+| Editor | Monaco. IntelliSense and live diagnostics are turned off per setting; pasting from outside and drag-and-drop text are blocked |
+| Preview | `<iframe sandbox="allow-scripts" srcdoc=...>`. `allow-same-origin` is never granted |
+| Side panel | Renders Markdown. Raw HTML is not allowed (safe rendering) |
+| Replay recorder | Collects editor changes with timestamps, batches and sends them |
+| Replay player | Rebuilds the code by applying events from the start; offers speed and seeking |
+| Signal collector | Blocked pastes, tab loss, largest single insertion |
+| Checker | Parses the submitted HTML with `DOMParser`, counts elements against the instructor's required-element rules, produces the result |
+| Writing checker | Scans HTML/CSS/JS with linter tools, produces a report and Turkish messages |
+| Rubric service | Criteria, automatic results, suggested score, instructor score, feedback, CSV |
+| IdentityProvider | `getCurrentUser()` and `isEnrolled(course)` interface. Demo in the MVP, Entra later |
+| Assignment/submission service | CRUD, locking, lists |
+
+## 3. Data model (summary)
+
+| Entity | Key fields |
+|---|---|
+| User | id, name, email, role (teacher/student) |
+| Course | id, name |
+| Enrollment | user_id, course_id, role |
+| Assignment | id, course_id, title, description_md, side_panel_md, starter_code, intellisense_enabled, paste_enabled, diagnostics_enabled, checker_enabled, check_rules (JSON), lint_rules (JSON), show_results_to_student, show_criteria_to_student, due_at |
+| Draft | id, assignment_id, student_id, code, updated_at |
+| Submission | id, assignment_id, student_id, final_code, submitted_at, locked, check_result (JSON), lint_report (JSON) |
+| ReplayEvent | id, draft_id, t_ms, kind, payload |
+| SignalSummary | draft_id, paste_blocked_count, blur_count, max_insert_chars |
+| Criterion | id, assignment_id, kind (auto/manual), label, max_points, check_rule_ref |
+| Evaluation | submission_id, suggested_points, final_points, feedback, graded_at |
+| CriterionResult | submission_id, criterion_id, auto_result (pass/fail/null), teacher_override, points |
+
+To make later mapping to Teams easier, entities are kept close to Teams' class/assignment/submission/grade logic.
+
+## 4. Replay event format (kept simple)
+
+Each event has: time (ms, relative to the session), kind (`edit`, `paste_blocked`, `blur`, `focus`, `submit`) and data. An `edit` event carries Monaco's change information (range + inserted text). The player starts from the starter code and applies events in order.
+
+## 5. Checker and rubric
+
+Check rules are defined with fields (the instructor never writes selectors) and stored in this form:
+
+```
+{ tag: "input", attrs: { type: "email" }, min_count: 1, non_empty: false, inside: "form" }
+```
+
+- The checker parses the submitted HTML and counts the elements that satisfy the rule. Result: pass/fail and the count found.
+- An automatic criterion either passes or fails (no partial credit, to keep it simple).
+- **Suggested score** = sum of the maximum points of passed automatic criteria + the manual points the instructor enters. The instructor can change any criterion. The **final score** is what the instructor saves.
+- A check means "used", not "works correctly". The UI and the pitch to the instructor are written accordingly.
+- The "must not be empty" option greatly reduces tricking the checker with empty tags (`<h1></h1>`).
+- When the checker is off, no check result is produced or shown.
+
+## 6. Writing checks (linter)
+
+The rule set consists of groups the instructor can turn on or off per assignment. Rules are shown as "warning"; only syntax errors count as "error".
+
+| Area | MVP rules |
+|---|---|
+| HTML | Unclosed or wrongly nested tags, duplicate `id`, `alt` on `img`, `doctype`, warning for presentational tags (`<i>`, `<b>`, `<center>`, `<font>`) |
+| CSS | Syntax errors, unknown property, invalid value |
+| JS | Syntax errors, `===` instead of `==`, unused variable, undefined variable |
+| Format | Consistent indentation |
+
+- Candidate tools: `html-validate` or `HTMLHint` (HTML), a CSS parser or `stylelint` (CSS), `acorn` + `ESLint` (JS), `Prettier` (format). Whether each works in the browser is verified by a **feasibility check at the start of S6**. A tool that does not work in the browser runs as static analysis on the server (code is not executed, with size and time limits). Tool choice is put to the owner for approval.
+- Messages: the 20-30 most common errors get a plain Turkish explanation. A message not in the table is shown raw.
+- `<em>` / `<i>` example: the linter flags `<i>` usage. Deciding "is emphasis meant here, or is it only italics" is not rule-based; it belongs to the instructor (and to the comment layer in Phase 2).
