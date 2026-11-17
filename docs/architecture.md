@@ -33,7 +33,7 @@ Code is never executed on the server. HTML/CSS/JS runs in the sandboxed iframe i
 
 | Component | Responsibility |
 |---|---|
-| Editor | Monaco. IntelliSense and live diagnostics are turned off per setting; pasting from outside and drag-and-drop text are blocked |
+| Editor | Monaco with separate HTML, CSS and JavaScript tabs, enabled per assignment. IntelliSense and live diagnostics are turned off per setting; pasting from outside and drag-and-drop text are blocked |
 | Preview | `<iframe sandbox="allow-scripts" srcdoc=...>`. `allow-same-origin` is never granted |
 | Side panel | Renders Markdown. Raw HTML is not allowed (safe rendering) |
 | Replay recorder | Collects editor changes with timestamps, batches and sends them |
@@ -66,6 +66,8 @@ To make later mapping to Teams easier, entities are kept close to Teams' class/a
 ## 4. Replay event format (kept simple)
 
 Each event has: time (ms, relative to the session), kind (`edit`, `paste_blocked`, `blur`, `focus`, `submit`) and data. An `edit` event carries Monaco's change information (range + inserted text). The player starts from the starter code and applies events in order.
+
+Starter code, drafts and submissions contain separate code for each language. Edit events identify the language they modify; preview and analysis use the enabled tabs.
 
 ## 5. Checker and rubric
 

@@ -2,7 +2,7 @@
 
 **UC-01 Instructor creates an assignment.** The instructor chooses "New assignment" and enters a title, the assignment text (questions and items, free Markdown), side panel content, starter code and a due date. They choose the settings: IntelliSense, paste, live error display. If they want, they turn on "Checker" and select the required elements. If they want, they choose the writing check rules. They build the rubric: automatic criteria coming from the checker rules, plus their own manual criteria. They save, and the assignment becomes visible to students.
 
-**UC-02 Student works on an assignment.** The student opens the assignment. The editor is on the left, the live preview in the middle/bottom, the lesson panel on the right. On first login they confirm the notice. As they type, the draft and events are saved.
+**UC-02 Student works on an assignment.** The student opens the assignment. The editor shows the HTML, CSS and JavaScript tabs enabled by the instructor; the live preview and lesson panel appear alongside it. On first login they confirm the notice. As they type, the draft and events are saved.
 
 **UC-03 Blocked paste.** If pasting is off for the assignment and the student tries to paste from outside, the action is cancelled, a short notice appears and a counter increases. Pasting text copied inside the editor works.
 

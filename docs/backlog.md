@@ -19,8 +19,8 @@ Status values: `todo`, `in progress`, `done`, `blocked`.
 
 | ID | Item | Refs | Status |
 |---|---|---|---|
-| S1-01 | Decide the editor file model (single HTML file or HTML/CSS/JS tabs) with the owner | Q8 | todo |
-| S1-02 | Monaco editor component | FR-04, ADR-01 | todo |
+| S1-01 | Decide the editor file model with the owner: separate HTML/CSS/JS tabs, enabled per assignment | Q8, ADR-16 | done |
+| S1-02 | Monaco editor component with configurable language tabs | FR-04, FR-27, ADR-01, ADR-16 | in progress |
 | S1-03 | Live preview in a sandboxed iframe (`srcdoc`, no `allow-same-origin`) | FR-04, NFR-01, ADR-02 | todo |
 | S1-04 | IntelliSense on/off setting wired to the editor | FR-02 | todo |
 | S1-05 | Tests: setting really turns suggestions off; manual check that the preview is isolated | FR-02, NFR-01 | todo |
@@ -34,7 +34,7 @@ Status values: `todo`, `in progress`, `done`, `blocked`.
 | S2-03 | Token-based session | NFR-03, ADR-06 | todo |
 | S2-04 | Role and enrollment authorization checks | FR-13, UC-06 | todo |
 | S2-05 | Instructor: create/edit assignment (title, Markdown text, side panel content, starter code, due date) | FR-01, UC-01 | todo |
-| S2-06 | Assignment settings: IntelliSense, paste | FR-02, FR-03 | todo |
+| S2-06 | Assignment settings: IntelliSense, paste, enabled HTML/CSS/JS tabs | FR-02, FR-03, FR-27 | todo |
 | S2-07 | Student assignment page: editor + preview + side panel with safe Markdown | FR-04, FR-05, UC-02 | todo |
 | S2-08 | Paste blocking: outside paste and drag-and-drop text blocked, internal copy-paste allowed, short notice | FR-03, UC-03, ADR-03 | todo |
 | S2-09 | Tests for the above, including rejection of unauthorized access | FR-13, FR-03 | todo |

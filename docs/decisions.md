@@ -46,3 +46,6 @@ All decisions are draft v0.3 except where explicitly confirmed. ADR-08 and ADR-0
 
 **ADR-15: No LLM in the MVP, comment provider interface in Phase 2.**
 *Decision:* No LLM/AI service is called in the MVP. In Phase 2 the LLM comment layer is added behind a single "comment provider" interface, like the identity provider. *Why:* Grading needs consistency and explainability. Sending student code to an external service requires the school's IT/KVKK approval. *Consequence:* The LLM only produces **comments**. It runs when the instructor presses a button, is limited to criteria the instructor selects (semantic tags, naming, indentation and so on), outputs short items with line numbers, and goes to the instructor only. Student name/number is not sent. Student code is treated as "data", so instructions inside it (prompt injection) are ignored. The provider (cloud or local small model) is chosen after the KVKK decision.
+
+**ADR-16: Assignment-specific editor tabs.**
+*Decision:* Use separate HTML, CSS and JavaScript tabs. The instructor selects which tabs are enabled for each assignment. *Consequence:* Code, starter content, replay changes and analysis must identify the corresponding language. The assignment settings are implemented in S2.

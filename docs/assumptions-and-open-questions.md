@@ -21,4 +21,4 @@
 - **Q5:** How long should replay records be kept after the course?
 - **Q6:** Are assignments graded in the course with points, or as pass/fail?
 - **Q7:** In Phase 2, first the LLM comment layer, or the PHP interpreter and blocks?
-- **Q8:** Editor file model: does the student write a single HTML file (with inline CSS/JS), or three tabs (HTML, CSS, JS)? This affects the checker, the replay events and the linter. To be decided in S1.
+- **Q8 (resolved):** The editor uses separate HTML, CSS and JavaScript tabs; the instructor selects enabled tabs per assignment (ADR-16).

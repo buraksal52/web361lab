@@ -32,6 +32,7 @@
 | FR-24 | Per-student parameter variation | Won't (MVP) |
 | FR-25 | The system giving the final grade by itself | Won't (deliberate decision) |
 | FR-26 | **LLM comment layer:** works on the instructor's request, produces comment suggestions for the instructor only (Phase 2) | Won't (MVP) |
+| FR-27 | The instructor selects which of the HTML, CSS and JavaScript editor tabs are enabled per assignment | Must |
 
 ## Non-functional requirements
 
