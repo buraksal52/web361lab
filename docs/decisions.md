@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-All decisions are draft v0.3. ADR-10 needs the owner's confirmation in S0. ADR-08 and ADR-09 apply to later phases. When a decision changes, update this file first.
+All decisions are draft v0.3 except where explicitly confirmed. ADR-08 and ADR-09 apply to later phases. When a decision changes, update this file first.
 
 **ADR-01: Monaco Editor.**
 *Decision:* Use Monaco as the editor. *Why:* IntelliSense, paste, live diagnostics and other behaviors can be controlled through settings and events; it is ready-made and widely used. *Consequence:* Large package size, acceptable.
@@ -29,8 +29,8 @@ All decisions are draft v0.3. ADR-10 needs the owner's confirmation in S0. ADR-0
 **ADR-09 (later phase): `sql.js` for SQL.**
 *Decision:* SQL assignments run in the browser with SQLite. *Why:* Ready-made, small, suited to automatic checking. *Consequence:* Small syntax differences from MySQL are clarified with the instructor. Done in Phase 4.
 
-**ADR-10: Propose the tech stack, wait for approval.**
-*Decision:* Frontend React + TypeScript + Vite, backend FastAPI, database PostgreSQL. The owner selected PostgreSQL for the application database. *Why:* The remaining stack favors simplicity and fast development. *Consequence:* Confirm the complete stack in Sprint 0; do not change it without approval.
+**ADR-10: Confirmed tech stack.**
+*Decision:* Frontend React + TypeScript + Vite, backend FastAPI, database PostgreSQL. The owner confirmed the stack in S0. *Why:* The stack favors simplicity and fast development. *Consequence:* Do not change it without approval.
 
 **ADR-11: Natural-language assignment, checker as an optional separate layer.**
 *Decision:* The assignment text is free Markdown and the system does not interpret it. The checker is separate and optional, and checks the rules the instructor selected. *Why:* The instructor's habit of writing assignments is not disturbed, which helps adoption. Converting natural language into rules needs an LLM, which carries reliability and privacy risks. *Consequence:* The instructor picks rules from cards/fields and never writes selectors.
