@@ -5,6 +5,7 @@ import { Editor, type CodeFiles, type Language } from './Editor'
 import { Preview } from './Preview'
 import { request, type Assignment, type Course, type User } from './api'
 import { StudentWorkspace } from './StudentWorkspace'
+import { SubmissionReview } from './SubmissionReview'
 import './style.css'
 
 export function App() {
@@ -132,6 +133,7 @@ export function App() {
             <Preview files={files} enabledLanguages={selected.enabled_languages} />
             <aside><h3>Ders içeriği</h3><ReactMarkdown>{selected.side_panel_md}</ReactMarkdown></aside>
           </div>}
+          {course.role === 'teacher' && <SubmissionReview key={selected.id} assignment={selected} token={token} />}
         </section> : <section><h3>Ödevler</h3>{course.role === 'teacher' && <button onClick={newAssignment}>Yeni ödev</button>}{assignments.map((assignment) => <div key={assignment.id}><button onClick={() => openAssignment(assignment)}>{assignment.title}</button>{course.role === 'teacher' && <button onClick={() => setEditing(assignment)}>Düzenle</button>}</div>)}</section>}
       </>}
     </>}

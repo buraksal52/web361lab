@@ -54,12 +54,12 @@ Status values: `todo`, `in progress`, `done`, `blocked`.
 
 | ID | Item | Refs | Status |
 |---|---|---|---|
-| S4-01 | Submit with a confirmation box and lock the submission | FR-08, UC-04 | todo |
-| S4-02 | Instructor submission list | FR-09, UC-05 | todo |
-| S4-03 | Submission view: final code and preview | FR-09 | todo |
-| S4-04 | Replay player (play/pause, speed, seek) | FR-10 | todo |
-| S4-05 | Signals display as counts and observations, with no judging words | FR-11, NFR-08, ADR-05 | todo |
-| S4-06 | End-to-end test of UC-01 → UC-06 and the manual checklist. **Core demo ready** | FR-01 to FR-14 | todo |
+| S4-01 | Submit with a confirmation box and lock the submission | FR-08, UC-04 | done |
+| S4-02 | Instructor submission list | FR-09, UC-05 | done |
+| S4-03 | Submission view: final code and preview | FR-09 | done |
+| S4-04 | Replay player (play/pause, speed, seek) | FR-10 | done |
+| S4-05 | Signals display as counts and observations, with no judging words | FR-11, NFR-08, ADR-05 | done |
+| S4-06 | End-to-end test of UC-01 → UC-06 and the manual checklist. **Core demo ready** | FR-01 to FR-14 | done |
 
 ## S5: Checker
 

@@ -74,3 +74,14 @@ class ReplayBatch(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     draft_id: Mapped[int] = mapped_column(ForeignKey('drafts.id'))
     batch_id: Mapped[str] = mapped_column(String(36))
+
+
+class Submission(Base):
+    __tablename__ = 'submissions'
+    __table_args__ = (UniqueConstraint('assignment_id', 'student_id'),)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    assignment_id: Mapped[int] = mapped_column(ForeignKey('assignments.id'))
+    student_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+    final_code: Mapped[dict] = mapped_column(JSON)
+    submitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    locked: Mapped[bool] = mapped_column(Boolean, default=True)

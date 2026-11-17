@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 from identity import current_user, require_enrollment
-from models import Assignment, Draft, ReplayBatch, ReplayEvent, User
+from models import Assignment, Draft, ReplayBatch, ReplayEvent, Submission, User
 from schemas import DraftBatch
 
 router = APIRouter()
@@ -54,7 +54,8 @@ def open_draft(assignment_id: int, user: User = Depends(current_user), db: Sessi
         db.add(draft)
         db.commit()
         db.refresh(draft)
-    return draft_response(draft)
+    submission = db.scalar(select(Submission).where(Submission.assignment_id == assignment_id, Submission.student_id == user.id))
+    return {**draft_response(draft), 'locked': bool(submission and submission.locked)}
 
 
 def apply_changes(code: str, changes):
@@ -77,6 +78,9 @@ def save_batch(assignment_id: int, batch: DraftBatch, user: User = Depends(curre
     batch_id = str(batch.batch_id)
     if db.scalar(select(ReplayBatch.id).where(ReplayBatch.draft_id == draft.id, ReplayBatch.batch_id == batch_id)) is not None:
         return draft_response(draft)
+    submission = db.scalar(select(Submission).where(Submission.assignment_id == assignment_id, Submission.student_id == user.id))
+    if submission and submission.locked:
+        raise HTTPException(409, 'Teslim edilen ödev düzenlenemez.')
     code = dict(draft.code)
     for event in batch.events:
         if event.kind == 'edit':
