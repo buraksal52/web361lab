@@ -21,9 +21,9 @@ Status values: `todo`, `in progress`, `done`, `blocked`.
 |---|---|---|---|
 | S1-01 | Decide the editor file model with the owner: separate HTML/CSS/JS tabs, enabled per assignment | Q8, ADR-16 | done |
 | S1-02 | Monaco editor component with configurable language tabs | FR-04, FR-27, ADR-01, ADR-16 | in progress |
-| S1-03 | Live preview in a sandboxed iframe (`srcdoc`, no `allow-same-origin`) | FR-04, NFR-01, ADR-02 | todo |
-| S1-04 | IntelliSense on/off setting wired to the editor | FR-02 | todo |
-| S1-05 | Tests: setting really turns suggestions off; manual check that the preview is isolated | FR-02, NFR-01 | todo |
+| S1-03 | Live preview in a sandboxed iframe (`srcdoc`, no `allow-same-origin`); browser isolation verification pending | FR-04, NFR-01, ADR-02 | in progress |
+| S1-04 | IntelliSense on/off setting wired to the editor; browser behavior verification pending | FR-02 | in progress |
+| S1-05 | Tests: setting really turns suggestions off; manual check that the preview is isolated | FR-02, NFR-01 | in progress |
 
 ## S2: Assignment, side panel, roles
 
