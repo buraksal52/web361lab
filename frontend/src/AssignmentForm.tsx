@@ -1,0 +1,44 @@
+import type { Assignment } from './api'
+import type { Language } from './Editor'
+
+type Props = {
+  assignment: Assignment
+  onChange: (assignment: Assignment) => void
+  onSave: () => void
+  onCancel: () => void
+}
+
+const languages: Language[] = ['html', 'css', 'javascript']
+
+function localDateTime(value: string | null) {
+  if (!value) return ''
+  const date = new Date(value)
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+}
+
+export function AssignmentForm({ assignment, onChange, onSave, onCancel }: Props) {
+  function update(key: keyof Assignment, value: unknown) {
+    onChange({ ...assignment, [key]: value })
+  }
+
+  return <form onSubmit={(event) => { event.preventDefault(); onSave() }}>
+    <h2>Ödev düzenle</h2>
+    <label>Başlık <input required value={assignment.title} onChange={(event) => update('title', event.target.value)} /></label>
+    <label>Ödev açıklaması <textarea value={assignment.description_md} onChange={(event) => update('description_md', event.target.value)} /></label>
+    <label>Ders içeriği <textarea value={assignment.side_panel_md} onChange={(event) => update('side_panel_md', event.target.value)} /></label>
+    <label>Son tarih <input type="datetime-local" value={localDateTime(assignment.due_at)} onChange={(event) => update('due_at', event.target.value ? new Date(event.target.value).toISOString() : null)} /></label>
+    <fieldset><legend>Etkin sekmeler</legend>
+      {languages.map((language) => <label key={language}>
+        <input type="checkbox" checked={assignment.enabled_languages.includes(language)} onChange={(event) => update('enabled_languages', event.target.checked ? [...assignment.enabled_languages, language] : assignment.enabled_languages.filter((item) => item !== language))} /> {language.toUpperCase()}
+      </label>)}
+    </fieldset>
+    {languages.filter((language) => assignment.enabled_languages.includes(language)).map((language) => <label key={language}>
+      {language.toUpperCase()} başlangıç kodu
+      <textarea value={assignment.starter_code[language]} onChange={(event) => update('starter_code', { ...assignment.starter_code, [language]: event.target.value })} />
+    </label>)}
+    <label><input type="checkbox" checked={assignment.intellisense_enabled} onChange={(event) => update('intellisense_enabled', event.target.checked)} /> IntelliSense etkin</label>
+    <label><input type="checkbox" checked={assignment.paste_enabled} onChange={(event) => update('paste_enabled', event.target.checked)} /> Dışarıdan yapıştırma etkin</label>
+    <button type="submit" disabled={assignment.enabled_languages.length === 0}>Kaydet</button>
+    <button type="button" onClick={onCancel}>İptal</button>
+  </form>
+}

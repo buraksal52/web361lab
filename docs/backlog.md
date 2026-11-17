@@ -29,15 +29,15 @@ Status values: `todo`, `in progress`, `done`, `blocked`.
 
 | ID | Item | Refs | Status |
 |---|---|---|---|
-| S2-01 | Data model and migrations: User, Course, Enrollment, Assignment | FR-01, FR-13 | todo |
-| S2-02 | `IdentityProvider` interface and demo implementation (seed users, role selection) | FR-14, NFR-06, ADR-07 | todo |
-| S2-03 | Token-based session | NFR-03, ADR-06 | todo |
-| S2-04 | Role and enrollment authorization checks | FR-13, UC-06 | todo |
-| S2-05 | Instructor: create/edit assignment (title, Markdown text, side panel content, starter code, due date) | FR-01, UC-01 | todo |
-| S2-06 | Assignment settings: IntelliSense, paste, enabled HTML/CSS/JS tabs | FR-02, FR-03, FR-27 | todo |
-| S2-07 | Student assignment page: editor + preview + side panel with safe Markdown | FR-04, FR-05, UC-02 | todo |
-| S2-08 | Paste blocking: outside paste and drag-and-drop text blocked, internal copy-paste allowed, short notice | FR-03, UC-03, ADR-03 | todo |
-| S2-09 | Tests for the above, including rejection of unauthorized access | FR-13, FR-03 | todo |
+| S2-01 | Data model and migrations: User, Course, Enrollment, Assignment | FR-01, FR-13 | done |
+| S2-02 | `IdentityProvider` interface and demo implementation (seed users, role selection) | FR-14, NFR-06, ADR-07 | done |
+| S2-03 | Token-based session | NFR-03, ADR-06 | done |
+| S2-04 | Role and enrollment authorization checks | FR-13, UC-06 | done |
+| S2-05 | Instructor: create/edit assignment (title, Markdown text, side panel content, starter code, due date) | FR-01, UC-01 | done |
+| S2-06 | Assignment settings: IntelliSense, paste, enabled HTML/CSS/JS tabs | FR-02, FR-03, FR-27 | done |
+| S2-07 | Student assignment page: editor + preview + side panel with safe Markdown | FR-04, FR-05, UC-02 | done |
+| S2-08 | Paste blocking: outside paste and drag-and-drop text blocked, internal copy-paste allowed, short notice | FR-03, UC-03, ADR-03 | done |
+| S2-09 | Tests for the above, including rejection of unauthorized access | FR-13, FR-03 | done |
 
 ## S3: Draft + replay recording
 

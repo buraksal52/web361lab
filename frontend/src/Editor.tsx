@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import MonacoEditor, { loader } from '@monaco-editor/react'
 import * as monaco from 'monaco-editor'
 import EditorWorker from 'monaco-editor/editor/editor.worker.js?worker'
@@ -31,16 +31,36 @@ type EditorProps = {
   files: CodeFiles
   onChange: (language: Language, value: string) => void
   intellisenseEnabled: boolean
+  pasteEnabled?: boolean
 }
 
-export function Editor({ enabledLanguages, files, onChange, intellisenseEnabled }: EditorProps) {
+export function Editor({ enabledLanguages, files, onChange, intellisenseEnabled, pasteEnabled = true }: EditorProps) {
   const [selected, setSelected] = useState<Language | undefined>(enabledLanguages[0])
+  const [notice, setNotice] = useState('')
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
+  const internalClipboard = useRef<string | null>(null)
   const active = selected && enabledLanguages.includes(selected) ? selected : enabledLanguages[0]
 
   if (!active) return <p>Bu ödevde etkin bir kod sekmesi yok.</p>
 
   return (
-    <section aria-label="Kod editörü" onKeyDownCapture={(event) => {
+    <section aria-label="Kod editörü" onCopyCapture={() => {
+      const editor = editorRef.current
+      const selection = editor?.getSelection()
+      internalClipboard.current = selection ? editor?.getModel()?.getValueInRange(selection) ?? null : null
+    }} onPasteCapture={(event) => {
+      if (!pasteEnabled && (internalClipboard.current === null || event.clipboardData.getData('text/plain') !== internalClipboard.current)) {
+        event.preventDefault()
+        event.stopPropagation()
+        setNotice('Dışarıdan yapıştırma bu ödevde kapalı.')
+      }
+    }} onDropCapture={(event) => {
+      if (!pasteEnabled) {
+        event.preventDefault()
+        event.stopPropagation()
+        setNotice('Sürükleyerek metin bırakma bu ödevde kapalı.')
+      }
+    }} onDragOverCapture={(event) => { if (!pasteEnabled) event.preventDefault() }} onKeyDownCapture={(event) => {
       if (!intellisenseEnabled && (event.ctrlKey || event.metaKey) && event.code === 'Space') {
         event.preventDefault()
         event.stopPropagation()
@@ -53,12 +73,14 @@ export function Editor({ enabledLanguages, files, onChange, intellisenseEnabled 
           </button>
         ))}
       </div>
+      {notice && <p role="status">{notice}</p>}
       <MonacoEditor
         height="60vh"
         path={`assignment.${active === 'javascript' ? 'js' : active}`}
         language={active}
         value={files[active]}
         onChange={(value) => onChange(active, value ?? '')}
+        onMount={(editor) => { editorRef.current = editor }}
         options={{
           quickSuggestions: intellisenseEnabled,
           suggestOnTriggerCharacters: intellisenseEnabled,
