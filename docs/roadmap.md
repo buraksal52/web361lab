@@ -7,7 +7,7 @@ Sprint length is set by the course tempo (suggestion: about 1 week). **At the st
 | Sprint | Output | Definition of done (DoD) |
 |---|---|---|
 | **S0: Setup** | Repo, folder structure, tech stack confirmation, skeleton app, `AGENTS.md`/`CLAUDE.md` in place | Frontend and backend start, a "hello" endpoint works, the tech stack is confirmed |
-| **S1: Editor + preview** | Monaco editor with configurable HTML/CSS/JS tabs, live preview (sandboxed iframe), IntelliSense on/off | When the setting changes IntelliSense really turns off, the preview is sandboxed, basic tests pass |
+| **S1: Editor + preview** | Monaco editor with configurable HTML/CSS/JS tabs, live preview (sandboxed iframe), IntelliSense on/off | When the setting changes IntelliSense really turns off, the preview is sandboxed, basic tests pass. Closed with owner approval. |
 | **S2: Assignment, side panel, roles** | Instructor creates/edits assignments (natural-language text) and selects enabled editor tabs, student assignment page (editor + Markdown side panel), paste on/off, role model and demo login (seed users, role selection) | The instructor can create an assignment and see it on the student screen, paste blocking works, unauthorized access is rejected |
 | **S3: Draft + replay recording** | First-login notice and consent (before recording), automatic draft, replay event recording, signal counters | Recording does not start without consent, the code comes back after a page refresh, events are recorded, signals are counted |
 | **S4: Submission + instructor screen** | Submit and lock, instructor submission list, code view, replay player, signal display | The core flow (UC-01 → UC-06) works from start to end. **Core demo ready** |
