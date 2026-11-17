@@ -8,11 +8,11 @@ Status values: `todo`, `in progress`, `done`, `blocked`.
 
 | ID | Item | Refs | Status |
 |---|---|---|---|
-| S0-01 | Create the repository structure (`frontend/`, `backend/`, `docs/`) and put the project documents in place | ADR-10 | todo |
+| S0-01 | Create the repository structure (`frontend/`, `backend/`, `docs/`) and put the project documents in place | ADR-10 | done |
 | S0-02 | Confirm the tech stack with the owner | ADR-10, A6 | done |
-| S0-03 | Frontend skeleton (React + TypeScript + Vite) starts | ADR-10 | todo |
-| S0-04 | Backend skeleton (FastAPI) with a "hello" endpoint | ADR-10 | todo |
-| S0-05 | Test runners for both sides, one passing sample test each | NFR-05 | todo |
+| S0-03 | Frontend skeleton (React + TypeScript + Vite) starts | ADR-10 | done |
+| S0-04 | Backend skeleton (FastAPI) with a "hello" endpoint | ADR-10 | done |
+| S0-05 | Test runners for both sides, one passing sample test each | NFR-05 | done |
 | S0-06 | Confirm folder and module names with the owner (top-level folders confirmed; feature modules to be agreed in their respective sprints) | `AGENTS.md` | in progress |
 
 ## S1: Editor + preview
