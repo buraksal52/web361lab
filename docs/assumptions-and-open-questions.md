@@ -7,7 +7,7 @@
 - **A3:** The server stores assignment, draft, submission, replay and evaluation data. Code execution happens in the browser.
 - **A4:** Being enrolled in the course = being a member of the Teams team (to be confirmed with the instructor).
 - **A5:** Login with the school account is possible (Entra). IT approval is obtained in the after-approval phase.
-- **A6:** The tech stack proposal (React, FastAPI, SQLite) is confirmed in S0.
+- **A6:** The remaining tech stack proposal (React, TypeScript, Vite, FastAPI) is confirmed in S0. The owner has selected PostgreSQL for the application database.
 - **A7:** Grades are given as points (to be confirmed with Q6). The score field was designed accordingly.
 - **A8:** Whether the linter tools work in the browser is verified at the start of S6.
 - **A9:** Documents, code identifiers and code comments are in English. User-facing UI text is in Turkish.

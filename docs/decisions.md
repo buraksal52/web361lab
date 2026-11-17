@@ -30,7 +30,7 @@ All decisions are draft v0.3. ADR-10 needs the owner's confirmation in S0. ADR-0
 *Decision:* SQL assignments run in the browser with SQLite. *Why:* Ready-made, small, suited to automatic checking. *Consequence:* Small syntax differences from MySQL are clarified with the instructor. Done in Phase 4.
 
 **ADR-10: Propose the tech stack, wait for approval.**
-*Decision:* Frontend React + TypeScript + Vite, backend FastAPI, database SQLite. *Why:* Simplicity and fast development. *Consequence:* Confirmed in Sprint 0, not changed without approval.
+*Decision:* Frontend React + TypeScript + Vite, backend FastAPI, database PostgreSQL. The owner selected PostgreSQL for the application database. *Why:* The remaining stack favors simplicity and fast development. *Consequence:* Confirm the complete stack in Sprint 0; do not change it without approval.
 
 **ADR-11: Natural-language assignment, checker as an optional separate layer.**
 *Decision:* The assignment text is free Markdown and the system does not interpret it. The checker is separate and optional, and checks the rules the instructor selected. *Why:* The instructor's habit of writing assignments is not disturbed, which helps adoption. Converting natural language into rules needs an LLM, which carries reliability and privacy risks. *Consequence:* The instructor picks rules from cards/fields and never writes selectors.

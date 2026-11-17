@@ -23,7 +23,7 @@ Browser (Teams tab or direct)
 │  ├─ Assignment / submission / draft / rubric API │
 │  ├─ Replay event intake and queries              │
 │  ├─ CSV export                                   │
-│  └─ Database (SQLite, can move to Postgres later)│
+│  └─ Database (PostgreSQL)                         │
 └──────────────────────────────────────────────────┘
 ```
 
