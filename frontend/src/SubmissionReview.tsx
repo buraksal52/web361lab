@@ -44,16 +44,19 @@ export function SubmissionReview({ assignment, token }: { assignment: Assignment
     } catch { setError('Düzenleme izni verilemedi.') }
   }
 
-  return <section>
-    <h3>Teslimler</h3>
+  return <section className="review-section">
+    <div className="page-heading"><div><h2>Teslimler</h2><p>Bir teslim seç, incele ve değerlendir.</p></div>
     <button type="button" onClick={() => { void downloadGrades(assignment.id, token).catch(() => setError('CSV indirilemedi.')) }}>Notları CSV indir</button>
+    </div>
     {error && <p role="alert">{error}</p>}
-    {submissions.length === 0 && <p>Henüz teslim yok.</p>}
-    {submissions.map((submission) => <div key={submission.id}>
+    <div className="review-layout"><div className="review-list card"><div className="review-list-head"><span>ÖĞRENCİ</span><span>TESLİM</span></div>
+    {submissions.length === 0 && <p className="empty-state">Henüz teslim yok.</p>}
+    {submissions.map((submission) => <div className={`review-row${selected?.id === submission.id ? ' active' : ''}`} key={submission.id}>
       <button type="button" onClick={() => open(submission)}>{submission.student_name}</button>
       <span>{new Date(submission.submitted_at).toLocaleString('tr-TR')} — {submission.locked ? 'Teslim edildi' : 'Düzenlemeye açık'}</span>
-    </div>)}
-    {selected && replay && <section>
+    </div>)}</div>
+    {selected && replay && <section className="review-detail card">
+      <span className="eyebrow dark">TESLİM DETAYI</span>
       <h3>{selected.student_name}</h3>
       {selected.locked && <button type="button" onClick={unlock}>Yeniden düzenlemeye izin ver</button>}
       <h4>Teslim edilen kod</h4>
@@ -67,6 +70,6 @@ export function SubmissionReview({ assignment, token }: { assignment: Assignment
       <p>En büyük tek ekleme: {replay.signals.max_insert_chars} karakter</p>
       <ReplayPlayer key={selected.id} initial={replay.initial_code} events={replay.events} languages={assignment.enabled_languages} />
       <EvaluationPanel key={`${selected.id}-${selected.locked}`} submissionId={selected.id} token={token} />
-    </section>}
+    </section>}</div>
   </section>
 }

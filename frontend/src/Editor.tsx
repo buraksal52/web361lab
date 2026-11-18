@@ -80,10 +80,10 @@ export function Editor({ enabledLanguages, files, onChange, intellisenseEnabled,
         event.stopPropagation()
       }
     }}>
-      <div aria-label="Kod dilleri">
+      <div aria-label="Kod dilleri" className="editor-tabs">
         {enabledLanguages.map((language) => (
           <button key={language} type="button" aria-pressed={language === active} onClick={() => setSelected(language)}>
-            {labels[language]}
+            {language === 'html' ? 'index.html' : language === 'css' ? 'style.css' : 'script.js'} <span className="sr-only">{labels[language]}</span>
           </button>
         ))}
       </div>

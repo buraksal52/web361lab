@@ -160,11 +160,10 @@ export function StudentWorkspace({ assignment, token, userId }: Props) {
   }
 
   return <>
-    <p role="status">{status}</p>
-    {files && !locked && <button type="button" onClick={submit} disabled={submitting}>Ödevi teslim et</button>}
-    {files && locked && <div><h3>Teslim edilen kod</h3>{assignment.enabled_languages.map((language) => <section key={language}><h4>{language.toUpperCase()}</h4><pre>{files[language]}</pre></section>)}</div>}
+    <div className="workspace-toolbar"><p role="status">{status}</p>{files && !locked && <button className="button-primary" type="button" onClick={submit} disabled={submitting}>Ödevi teslim et</button>}</div>
+    {files && locked && <div className="card result-card"><h3>Teslim edilen kod</h3>{assignment.enabled_languages.map((language) => <section key={language}><h4>{language.toUpperCase()}</h4><pre>{files[language]}</pre></section>)}</div>}
     {locked && checkResults !== null && assignment.checker_enabled && assignment.show_results_to_student && <CheckResults results={checkResults} />}
-    {locked && feedback?.final_points != null && <section>
+    {locked && feedback?.final_points != null && <section className="card result-card">
       <h3>Öğretim elemanı değerlendirmesi</h3>
       <p>Son puan: {feedback.final_points}</p>
       {feedback.feedback && <p>Geri bildirim: {feedback.feedback}</p>}
@@ -174,8 +173,8 @@ export function StudentWorkspace({ assignment, token, userId }: Props) {
         intellisenseEnabled={assignment.intellisense_enabled} diagnosticsEnabled={assignment.diagnostics_enabled} pasteEnabled={assignment.paste_enabled}
         modelNamespace={`student-${userId}-assignment-${assignment.id}`}
         onPasteBlocked={() => record('paste_blocked', {})} />
-      <Preview files={files} enabledLanguages={assignment.enabled_languages} />
-      <aside><h3>Ders içeriği</h3><ReactMarkdown>{assignment.side_panel_md}</ReactMarkdown></aside>
+      <div className="workspace-side"><section className="preview-card"><div className="panel-bar">Canlı önizleme <span>Güncel</span></div><Preview files={files} enabledLanguages={assignment.enabled_languages} /></section>
+      <aside className="content-card"><h3>Ders içeriği</h3><ReactMarkdown>{assignment.side_panel_md}</ReactMarkdown></aside></div>
     </div>}
   </>
 }

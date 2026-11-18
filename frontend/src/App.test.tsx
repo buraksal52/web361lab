@@ -20,7 +20,7 @@ vi.mock('@monaco-editor/react', () => ({
 }))
 
 test('shows the application name', () => {
-  expect(renderToStaticMarkup(<App />)).toContain('web361lab')
+  expect(renderToStaticMarkup(<App />)).toContain('CENG 361 Lab')
 })
 
 test('shows only enabled language tabs', () => {
