@@ -76,7 +76,7 @@ Status values: `todo`, `in progress`, `done`, `blocked`.
 
 | ID | Item | Refs | Status |
 |---|---|---|---|
-| S6-01 | Feasibility check of the linter tools in the browser; present the result to the owner for approval | FR-17, ADR-13, R13 | todo |
+| S6-01 | Feasibility check of the linter tools in the browser; present the result to the owner for approval | FR-17, ADR-13, R13, [feasibility](s6-feasibility.md) | in progress |
 | S6-02 | Run the linter at submission and store the report | FR-17 | todo |
 | S6-03 | Instructor rule selection per assignment | FR-17 | todo |
 | S6-04 | Turkish message table (first 20 common errors), raw message for the rest | FR-17, R14 | todo |
