@@ -19,6 +19,7 @@ export type Assignment = {
   checker_enabled: boolean
   check_rules?: CheckRule[]
   show_results_to_student: boolean
+  show_criteria_to_student: boolean
   diagnostics_enabled: boolean
   lint_rules?: string[]
   criteria?: Criterion[]
@@ -32,4 +33,16 @@ export async function request<T>(path: string, token?: string, options: RequestI
   })
   if (!response.ok) throw new Error('İşlem tamamlanamadı. Lütfen tekrar deneyin.')
   return response.json() as Promise<T>
+}
+
+export async function downloadGrades(assignmentId: number, token: string) {
+  const response = await fetch(`/api/assignments/${assignmentId}/grades.csv`, { headers: { Authorization: `Bearer ${token}` } })
+  if (!response.ok) throw new Error('CSV indirilemedi.')
+  const url = URL.createObjectURL(await response.blob())
+  try {
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `grades-${assignmentId}.csv`
+    link.click()
+  } finally { URL.revokeObjectURL(url) }
 }

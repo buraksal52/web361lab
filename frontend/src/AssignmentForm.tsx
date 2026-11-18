@@ -52,6 +52,7 @@ export function AssignmentForm({ assignment, onChange, onSave, onCancel }: Props
       <label><input type="checkbox" checked={assignment.show_results_to_student} onChange={(event) => update('show_results_to_student', event.target.checked)} /> Kontrol kurallarını ve sonuçlarını öğrenciye göster</label>
     </>}
     <RubricEditor criteria={criteria} rules={rules} checkerEnabled={assignment.checker_enabled} onChange={(value) => update('criteria', value)} />
+    <label><input type="checkbox" checked={assignment.show_criteria_to_student} onChange={(event) => update('show_criteria_to_student', event.target.checked)} /> Değerlendirme kriterlerini öğrenciye göster</label>
     {missingRule && <p role="alert">Otomatik kriterler için bir kontrol kuralı seçin veya ilgili kriteri kaldırın.</p>}
     <button type="submit" disabled={assignment.enabled_languages.length === 0 || missingRule}>Kaydet</button>
     <button type="button" onClick={onCancel}>İptal</button>

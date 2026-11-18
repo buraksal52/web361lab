@@ -92,7 +92,7 @@ export function App() {
 
   function newAssignment() {
     if (!course) return
-    setEditing({ id: 0, course_id: course.id, title: '', description_md: '', side_panel_md: '', starter_code: { html: '', css: '', javascript: '' }, enabled_languages: ['html'], intellisense_enabled: true, paste_enabled: true, diagnostics_enabled: false, lint_rules: [], checker_enabled: false, check_rules: [], show_results_to_student: false, criteria: [], due_at: null })
+    setEditing({ id: 0, course_id: course.id, title: '', description_md: '', side_panel_md: '', starter_code: { html: '', css: '', javascript: '' }, enabled_languages: ['html'], intellisense_enabled: true, paste_enabled: true, diagnostics_enabled: false, lint_rules: [], checker_enabled: false, check_rules: [], show_results_to_student: false, show_criteria_to_student: false, criteria: [], due_at: null })
   }
 
   async function logout() {
@@ -128,6 +128,10 @@ export function App() {
           <h3>{selected.title}</h3>
           <ReactMarkdown>{selected.description_md}</ReactMarkdown>
           {selected.due_at && <p>Son tarih: {new Date(selected.due_at).toLocaleString('tr-TR')}</p>}
+          {course.role === 'student' && selected.show_criteria_to_student && selected.criteria && <section>
+            <h4>Değerlendirme kriterleri</h4>
+            {selected.criteria.length === 0 ? <p>Henüz kriter tanımlanmamış.</p> : <ul>{selected.criteria.map((criterion) => <li key={criterion.id}>{criterion.label} — azami {criterion.max_points} puan</li>)}</ul>}
+          </section>}
           {course.role === 'student' ? <StudentWorkspace key={`${identity.id}-${selected.id}`} assignment={selected} token={token} userId={identity.id} /> : <div className="workspace">
             <Editor enabledLanguages={selected.enabled_languages} files={files} onChange={(language: Language, value: string) => setFiles((current) => ({ ...current, [language]: value }))} intellisenseEnabled={selected.intellisense_enabled} diagnosticsEnabled={selected.diagnostics_enabled} pasteEnabled={selected.paste_enabled} modelNamespace={`teacher-assignment-${selected.id}`} />
             <Preview files={files} enabledLanguages={selected.enabled_languages} />

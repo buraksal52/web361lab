@@ -84,8 +84,10 @@ Check rules are defined with fields (the instructor never writes selectors) and 
 
 - The checker parses the submitted HTML and counts the elements that satisfy the rule. Result: pass/fail and the count found.
 - An automatic criterion either passes or fails (no partial credit, to keep it simple).
-- Criterion IDs are stable, maximum points use two-decimal precision, and automatic criteria reference existing checker-rule IDs. The criteria configuration is currently returned only to the instructor; student visibility is added in S7-05.
+- Criterion IDs are stable, maximum points use two-decimal precision, and automatic criteria reference existing checker-rule IDs. Students see criteria only when the instructor enables that assignment setting; checker-result visibility is a separate setting.
 - **Suggested score** = sum of the maximum points of passed automatic criteria + the manual points the instructor enters. The instructor can change any criterion. The **final score** is what the instructor saves.
+- Each submission stores a snapshot of its criteria. Submissions made before snapshots existed use the current assignment criteria until first evaluated. An earlier evaluation is retained when a submission is reopened or resubmitted, but is not presented as the new submission's grade or included in CSV export. The instructor can review the earlier score and enter a new evaluation.
+- Final scores and feedback are visible only to the student and course instructor. CSV export is instructor-only and includes current final scores and feedback; values that could be interpreted as spreadsheet formulas are escaped.
 - A check means "used", not "works correctly". The UI and the pitch to the instructor are written accordingly.
 - The "must not be empty" option greatly reduces tricking the checker with empty tags (`<h1></h1>`).
 - When the checker is off, no check result is produced or shown.

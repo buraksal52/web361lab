@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Preview } from './Preview'
 import { ReplayPlayer, type ReplayEvent } from './ReplayPlayer'
-import { request, type Assignment, type CheckResult, type LintIssue } from './api'
+import { downloadGrades, request, type Assignment, type CheckResult, type LintIssue } from './api'
 import { WritingReport } from './WritingReport'
+import { EvaluationPanel } from './EvaluationPanel'
 import { CheckResults } from './CheckResults'
 import type { CodeFiles } from './Editor'
 
@@ -45,6 +46,7 @@ export function SubmissionReview({ assignment, token }: { assignment: Assignment
 
   return <section>
     <h3>Teslimler</h3>
+    <button type="button" onClick={() => { void downloadGrades(assignment.id, token).catch(() => setError('CSV indirilemedi.')) }}>Notları CSV indir</button>
     {error && <p role="alert">{error}</p>}
     {submissions.length === 0 && <p>Henüz teslim yok.</p>}
     {submissions.map((submission) => <div key={submission.id}>
@@ -64,6 +66,7 @@ export function SubmissionReview({ assignment, token }: { assignment: Assignment
       <p>Sekme veya pencere odağı kaybı: {replay.signals.blur_count}</p>
       <p>En büyük tek ekleme: {replay.signals.max_insert_chars} karakter</p>
       <ReplayPlayer key={selected.id} initial={replay.initial_code} events={replay.events} languages={assignment.enabled_languages} />
+      <EvaluationPanel key={`${selected.id}-${selected.locked}`} submissionId={selected.id} token={token} />
     </section>}
   </section>
 }

@@ -11,6 +11,7 @@ type Event = { t_ms: number; kind: 'edit' | 'paste_blocked' | 'blur' | 'focus'; 
 type Batch = { batch_id: string; code: CodeFiles; events: Event[] }
 type Pending = { batches: Batch[]; code: CodeFiles }
 type Draft = { code: CodeFiles; started_at: string; locked: boolean; submission_id: number | null }
+type Feedback = { final_points: string | null; feedback: string | null }
 
 type Props = { assignment: Assignment; token: string; userId: number }
 
@@ -20,6 +21,7 @@ export function StudentWorkspace({ assignment, token, userId }: Props) {
   const [locked, setLocked] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [checkResults, setCheckResults] = useState<CheckResult[] | null>(null)
+  const [feedback, setFeedback] = useState<Feedback | null>(null)
   const pending = useRef<Pending | null>(null)
   const busy = useRef(false)
   const flushTask = useRef<Promise<boolean> | null>(null)
@@ -82,6 +84,12 @@ export function StudentWorkspace({ assignment, token, userId }: Props) {
         const draft = await request<Draft>(url, token, { method: 'POST' })
         if (draft.locked) {
           if (alive.current) { setLocked(true); setFiles(draft.code); setStatus('Ödev teslim edildi ve düzenlemeye kapalı.') }
+          if (draft.submission_id) {
+            try {
+              const result = await request<Feedback>(`/submissions/${draft.submission_id}/feedback`, token)
+              if (alive.current) setFeedback(result)
+            } catch { if (alive.current) setStatus('Ödev teslim edildi; değerlendirme alınamadı.') }
+          }
           if (draft.submission_id && assignment.checker_enabled && assignment.show_results_to_student) {
             try {
               const result = await request<{ check_result?: CheckResult[] }>(`/submissions/${draft.submission_id}`, token)
@@ -156,6 +164,11 @@ export function StudentWorkspace({ assignment, token, userId }: Props) {
     {files && !locked && <button type="button" onClick={submit} disabled={submitting}>Ödevi teslim et</button>}
     {files && locked && <div><h3>Teslim edilen kod</h3>{assignment.enabled_languages.map((language) => <section key={language}><h4>{language.toUpperCase()}</h4><pre>{files[language]}</pre></section>)}</div>}
     {locked && checkResults !== null && assignment.checker_enabled && assignment.show_results_to_student && <CheckResults results={checkResults} />}
+    {locked && feedback?.final_points != null && <section>
+      <h3>Öğretim elemanı değerlendirmesi</h3>
+      <p>Son puan: {feedback.final_points}</p>
+      {feedback.feedback && <p>Geri bildirim: {feedback.feedback}</p>}
+    </section>}
     {files && !locked && !submitting && <div className="workspace">
       <Editor enabledLanguages={assignment.enabled_languages} files={files} onChange={change}
         intellisenseEnabled={assignment.intellisense_enabled} diagnosticsEnabled={assignment.diagnostics_enabled} pasteEnabled={assignment.paste_enabled}
