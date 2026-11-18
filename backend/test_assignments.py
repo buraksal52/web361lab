@@ -126,3 +126,49 @@ def test_submit_lock_teacher_review_and_unlock(client):
     assert client.post(f'/submissions/{submission_id}/unlock', headers=teacher).status_code == 200
     assert client.post(f'{url}/draft/batches', headers=student, json=later).status_code == 200
     assert client.post(f'{url}/submit', headers=student, json=code).status_code == 200
+
+
+def test_checker_visibility_and_rule_snapshot(client):
+    teacher, student, other = auth(client, 1), auth(client, 2), auth(client, 4)
+    rule = {'id': str(uuid4()), 'tag': 'h1', 'attrs': {}, 'min_count': 1, 'non_empty': True, 'inside': None, 'label_linked': False}
+    assignment = {'course_id': 1, 'title': 'Form', 'enabled_languages': ['html'], 'checker_enabled': True, 'check_rules': [rule]}
+    assignment_id = client.post('/assignments', headers=teacher, json=assignment).json()['id']
+    url = f'/assignments/{assignment_id}'
+    assert client.get(url, headers=teacher).json()['check_rules'][0]['id'] == rule['id']
+    assert 'check_rules' not in client.get(url, headers=student).json()
+    assert 'check_rules' not in client.get('/courses/1/assignments', headers=student).json()[0]
+    client.post('/me/recording-consent', headers=student)
+    client.post(f'{url}/draft', headers=student)
+    code = {'html': '<h1>Merhaba</h1>', 'css': '', 'javascript': ''}
+    batch = {'batch_id': str(uuid4()), 'code': code, 'events': [{'t_ms': 1, 'kind': 'edit', 'payload': {'language': 'html', 'changes': [{'rangeOffset': 0, 'rangeLength': 0, 'text': code['html']}]}}]}
+    assert client.post(f'{url}/draft/batches', headers=student, json=batch).status_code == 200
+    submission = client.post(f'{url}/submit', headers=student, json=code)
+    assert submission.status_code == 200
+    detail_url = f"/submissions/{submission.json()['id']}"
+    assert 'check_result' not in client.get(detail_url, headers=student).json()
+    assert client.get(detail_url, headers=other).status_code == 403
+    result = client.get(detail_url, headers=teacher).json()['check_result']
+    assert result[0]['used'] and result[0]['count'] == 1 and result[0]['rule'] == rule
+    assignment['show_results_to_student'] = True
+    assignment['check_rules'] = []
+    assert client.put(url, headers=teacher, json=assignment).status_code == 200
+    assert client.get(detail_url, headers=student).json()['check_result'][0]['rule'] == rule
+    assignment['checker_enabled'] = False
+    assert client.put(url, headers=teacher, json=assignment).status_code == 200
+    assert 'check_result' not in client.get(detail_url, headers=teacher).json()
+    assert 'check_result' not in client.get(detail_url, headers=student).json()
+
+
+def test_checker_off_does_not_produce_result(client, monkeypatch):
+    def unexpected_checker(*_args):
+        raise AssertionError('Checker must not run when disabled')
+
+    monkeypatch.setattr('submissions.run_checker', unexpected_checker)
+    teacher, student = auth(client, 1), auth(client, 2)
+    assignment = {'course_id': 1, 'title': 'Kapalı', 'enabled_languages': ['html'], 'checker_enabled': False, 'show_results_to_student': True}
+    assignment_id = client.post('/assignments', headers=teacher, json=assignment).json()['id']
+    client.post('/me/recording-consent', headers=student)
+    client.post(f'/assignments/{assignment_id}/draft', headers=student)
+    submission = client.post(f'/assignments/{assignment_id}/submit', headers=student, json={'html': '', 'css': '', 'javascript': ''})
+    assert submission.status_code == 200
+    assert 'check_result' not in client.get(f"/submissions/{submission.json()['id']}", headers=teacher).json()

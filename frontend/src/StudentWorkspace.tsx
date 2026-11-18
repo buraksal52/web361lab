@@ -2,14 +2,15 @@ import { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Editor, type CodeFiles, type Language } from './Editor'
 import { Preview } from './Preview'
-import { request, type Assignment } from './api'
+import { request, type Assignment, type CheckResult } from './api'
+import { CheckResults } from './CheckResults'
 import type { editor } from 'monaco-editor'
 
 type Change = { rangeOffset: number; rangeLength: number; text: string }
 type Event = { t_ms: number; kind: 'edit' | 'paste_blocked' | 'blur' | 'focus'; payload: { language?: Language; changes?: Change[] } }
 type Batch = { batch_id: string; code: CodeFiles; events: Event[] }
 type Pending = { batches: Batch[]; code: CodeFiles }
-type Draft = { code: CodeFiles; started_at: string; locked: boolean }
+type Draft = { code: CodeFiles; started_at: string; locked: boolean; submission_id: number | null }
 
 type Props = { assignment: Assignment; token: string; userId: number }
 
@@ -18,6 +19,7 @@ export function StudentWorkspace({ assignment, token, userId }: Props) {
   const [status, setStatus] = useState('Taslak yükleniyor…')
   const [locked, setLocked] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [checkResults, setCheckResults] = useState<CheckResult[] | null>(null)
   const pending = useRef<Pending | null>(null)
   const busy = useRef(false)
   const flushTask = useRef<Promise<boolean> | null>(null)
@@ -80,6 +82,12 @@ export function StudentWorkspace({ assignment, token, userId }: Props) {
         const draft = await request<Draft>(url, token, { method: 'POST' })
         if (draft.locked) {
           if (alive.current) { setLocked(true); setFiles(draft.code); setStatus('Ödev teslim edildi ve düzenlemeye kapalı.') }
+          if (draft.submission_id && assignment.checker_enabled && assignment.show_results_to_student) {
+            try {
+              const result = await request<{ check_result?: CheckResult[] }>(`/submissions/${draft.submission_id}`, token)
+              if (alive.current) setCheckResults(result.check_result ?? null)
+            } catch { if (alive.current) setStatus('Ödev teslim edildi; kontrol sonucu alınamadı.') }
+          }
           return
         }
         const saved = sessionStorage.getItem(key)
@@ -128,9 +136,15 @@ export function StudentWorkspace({ assignment, token, userId }: Props) {
       return
     }
     try {
-      await request(`/assignments/${assignment.id}/submit`, token, { method: 'POST', body: JSON.stringify(pending.current.code) })
+      const submission = await request<{ id: number }>(`/assignments/${assignment.id}/submit`, token, { method: 'POST', body: JSON.stringify(pending.current.code) })
       setLocked(true)
       setStatus('Ödev teslim edildi ve düzenlemeye kapalı.')
+      if (assignment.checker_enabled && assignment.show_results_to_student) {
+        try {
+          const result = await request<{ check_result?: CheckResult[] }>(`/submissions/${submission.id}`, token)
+          setCheckResults(result.check_result ?? null)
+        } catch { setStatus('Ödev teslim edildi; kontrol sonucu alınamadı.') }
+      }
     } catch {
       setStatus('Ödev teslim edilemedi. Lütfen tekrar deneyin.')
       recording.current = true
@@ -141,6 +155,7 @@ export function StudentWorkspace({ assignment, token, userId }: Props) {
     <p role="status">{status}</p>
     {files && !locked && <button type="button" onClick={submit} disabled={submitting}>Ödevi teslim et</button>}
     {files && locked && <div><h3>Teslim edilen kod</h3>{assignment.enabled_languages.map((language) => <section key={language}><h4>{language.toUpperCase()}</h4><pre>{files[language]}</pre></section>)}</div>}
+    {locked && checkResults !== null && assignment.checker_enabled && assignment.show_results_to_student && <CheckResults results={checkResults} />}
     {files && !locked && !submitting && <div className="workspace">
       <Editor enabledLanguages={assignment.enabled_languages} files={files} onChange={change}
         intellisenseEnabled={assignment.intellisense_enabled} pasteEnabled={assignment.paste_enabled}

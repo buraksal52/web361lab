@@ -65,12 +65,12 @@ Status values: `todo`, `in progress`, `done`, `blocked`.
 
 | ID | Item | Refs | Status |
 |---|---|---|---|
-| S5-01 | Assignment form: "Enable checker" toggle and required-element fields (tag, attribute, minimum count, must not be empty, inside element, label linked to input) | FR-15, ADR-11 | todo |
-| S5-02 | Static checker with `DOMParser`: pass/fail and the count found | FR-15, ADR-12 | todo |
-| S5-03 | Run the checker at submission and store the result | FR-15, UC-04 | todo |
-| S5-04 | Instructor submission view: "used / not used" per rule | FR-16, NFR-08 | todo |
-| S5-05 | Per-assignment setting to show results to the student (default off) | FR-16 | todo |
-| S5-06 | Example solution set (complete, incomplete, empty-tag) and tests | FR-15, R12 | todo |
+| S5-01 | Assignment form: "Enable checker" toggle and required-element fields (tag, attribute, minimum count, must not be empty, inside element, label linked to input) | FR-15, ADR-11 | done |
+| S5-02 | Bounded server-side static HTML checker: pass/fail and the count found | FR-15, ADR-12, ADR-17 | done |
+| S5-03 | Run the checker at submission and store the result | FR-15, UC-04 | done |
+| S5-04 | Instructor submission view: "used / not used" per rule | FR-16, NFR-08 | done |
+| S5-05 | Per-assignment setting to show results to the student (default off) | FR-16 | done |
+| S5-06 | Example solution set (complete, incomplete, empty-tag) and tests | FR-15, R12 | done |
 
 ## S6: Writing checks
 

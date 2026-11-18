@@ -47,25 +47,38 @@ def courses(user: User = Depends(current_user), db: Session = Depends(get_db)):
     return [{'id': course.id, 'name': course.name, 'role': role} for course, role in rows]
 
 
-@app.get('/courses/{course_id}/assignments', response_model=list[AssignmentOut])
+def assignment_response(assignment: Assignment, role: str):
+    result = AssignmentOut.model_validate(assignment).model_dump()
+    if role != 'teacher' and not assignment.show_results_to_student:
+        result['check_rules'] = None
+    return result
+
+
+def assignment_values(data: AssignmentInput):
+    result = data.model_dump()
+    result['check_rules'] = [rule.model_dump(mode='json') for rule in data.check_rules]
+    return result
+
+
+@app.get('/courses/{course_id}/assignments', response_model=list[AssignmentOut], response_model_exclude_none=True)
 def list_assignments(course_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
-    require_enrollment(user, course_id, db)
-    return db.scalars(select(Assignment).where(Assignment.course_id == course_id)).all()
+    enrollment = require_enrollment(user, course_id, db)
+    return [assignment_response(assignment, enrollment.role) for assignment in db.scalars(select(Assignment).where(Assignment.course_id == course_id)).all()]
 
 
-@app.get('/assignments/{assignment_id}', response_model=AssignmentOut)
+@app.get('/assignments/{assignment_id}', response_model=AssignmentOut, response_model_exclude_none=True)
 def get_assignment(assignment_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
     assignment = db.get(Assignment, assignment_id)
     if assignment is None:
         raise HTTPException(404, 'Ödev bulunamadı.')
-    require_enrollment(user, assignment.course_id, db)
-    return assignment
+    enrollment = require_enrollment(user, assignment.course_id, db)
+    return assignment_response(assignment, enrollment.role)
 
 
 @app.post('/assignments', response_model=AssignmentOut, status_code=201)
 def create_assignment(data: AssignmentInput, user: User = Depends(current_user), db: Session = Depends(get_db)):
     require_enrollment(user, data.course_id, db, 'teacher')
-    assignment = Assignment(**data.model_dump())
+    assignment = Assignment(**assignment_values(data))
     db.add(assignment)
     db.commit()
     db.refresh(assignment)
@@ -80,7 +93,7 @@ def update_assignment(assignment_id: int, data: AssignmentInput, user: User = De
     require_enrollment(user, assignment.course_id, db, 'teacher')
     if data.course_id != assignment.course_id:
         raise HTTPException(400, 'Ödevin dersi değiştirilemez.')
-    for key, value in data.model_dump().items():
+    for key, value in assignment_values(data).items():
         setattr(assignment, key, value)
     db.commit()
     db.refresh(assignment)

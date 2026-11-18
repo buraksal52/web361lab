@@ -1,5 +1,6 @@
 import type { Assignment } from './api'
 import type { Language } from './Editor'
+import { CheckerRules } from './CheckerRules'
 
 type Props = {
   assignment: Assignment
@@ -38,6 +39,11 @@ export function AssignmentForm({ assignment, onChange, onSave, onCancel }: Props
     </label>)}
     <label><input type="checkbox" checked={assignment.intellisense_enabled} onChange={(event) => update('intellisense_enabled', event.target.checked)} /> IntelliSense etkin</label>
     <label><input type="checkbox" checked={assignment.paste_enabled} onChange={(event) => update('paste_enabled', event.target.checked)} /> Dışarıdan yapıştırma etkin</label>
+    <label><input type="checkbox" checked={assignment.checker_enabled} onChange={(event) => update('checker_enabled', event.target.checked)} /> Öğe kullanım kontrolü etkin</label>
+    {assignment.checker_enabled && <>
+      <CheckerRules rules={assignment.check_rules ?? []} onChange={(rules) => update('check_rules', rules)} />
+      <label><input type="checkbox" checked={assignment.show_results_to_student} onChange={(event) => update('show_results_to_student', event.target.checked)} /> Kontrol kurallarını ve sonuçlarını öğrenciye göster</label>
+    </>}
     <button type="submit" disabled={assignment.enabled_languages.length === 0}>Kaydet</button>
     <button type="button" onClick={onCancel}>İptal</button>
   </form>

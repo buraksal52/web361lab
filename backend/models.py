@@ -41,6 +41,9 @@ class Assignment(Base):
     enabled_languages: Mapped[list] = mapped_column(JSON)
     intellisense_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     paste_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    checker_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    check_rules: Mapped[list] = mapped_column(JSON, default=list)
+    show_results_to_student: Mapped[bool] = mapped_column(Boolean, default=False)
     due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
@@ -85,3 +88,4 @@ class Submission(Base):
     final_code: Mapped[dict] = mapped_column(JSON)
     submitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     locked: Mapped[bool] = mapped_column(Boolean, default=True)
+    check_result: Mapped[list | None] = mapped_column(JSON, nullable=True)

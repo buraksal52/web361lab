@@ -2,6 +2,8 @@ import type { CodeFiles, Language } from './Editor'
 
 export type User = { id: number; name: string; role: string }
 export type Course = { id: number; name: string; role: string }
+export type CheckRule = { id: string; tag: string; attrs: Record<string, string>; min_count: number; non_empty: boolean; inside: string | null; label_linked: boolean }
+export type CheckResult = { rule: CheckRule; count: number; used: boolean }
 export type Assignment = {
   id: number
   course_id: number
@@ -12,6 +14,9 @@ export type Assignment = {
   enabled_languages: Language[]
   intellisense_enabled: boolean
   paste_enabled: boolean
+  checker_enabled: boolean
+  check_rules?: CheckRule[]
+  show_results_to_student: boolean
   due_at: string | null
 }
 

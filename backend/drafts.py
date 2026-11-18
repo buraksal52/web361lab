@@ -55,7 +55,8 @@ def open_draft(assignment_id: int, user: User = Depends(current_user), db: Sessi
         db.commit()
         db.refresh(draft)
     submission = db.scalar(select(Submission).where(Submission.assignment_id == assignment_id, Submission.student_id == user.id))
-    return {**draft_response(draft), 'locked': bool(submission and submission.locked)}
+    return {**draft_response(draft), 'locked': bool(submission and submission.locked),
+            'submission_id': submission.id if submission and submission.locked else None}
 
 
 def apply_changes(code: str, changes):

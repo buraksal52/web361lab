@@ -49,3 +49,6 @@ All decisions are draft v0.3 except where explicitly confirmed. ADR-08 and ADR-0
 
 **ADR-16: Assignment-specific editor tabs.**
 *Decision:* Use separate HTML, CSS and JavaScript tabs. The instructor selects which tabs are enabled for each assignment. *Consequence:* Code, starter content, replay changes and analysis must identify the corresponding language. The assignment settings are implemented in S2.
+
+**ADR-17: Server-side static checker.**
+*Decision:* Run the optional HTML checker on the server at submission, using a bounded static parser; never execute student code. Enforce input-size and execution-time limits. *Why:* Rules and results must remain hidden from students unless the instructor enables visibility; browser-side checking would disclose the rules to the student's browser. *Consequence:* The server stores results with their rule snapshot and applies authorization on every response. This replaces the S5 browser `DOMParser` choice.

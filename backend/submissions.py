@@ -9,6 +9,7 @@ from drafts import student_assignment
 from identity import current_user, require_enrollment
 from models import Assignment, Draft, ReplayEvent, Submission, User
 from schemas import CodeFiles
+from checker import run_checker
 
 router = APIRouter()
 
@@ -23,7 +24,7 @@ def teacher_assignment(assignment_id: int, user: User, db: Session):
 
 @router.post('/assignments/{assignment_id}/submit')
 def submit(assignment_id: int, code: CodeFiles, user: User = Depends(current_user), db: Session = Depends(get_db)):
-    student_assignment(assignment_id, user, db)
+    assignment = student_assignment(assignment_id, user, db)
     draft = db.scalar(select(Draft).where(Draft.assignment_id == assignment_id, Draft.student_id == user.id).with_for_update())
     if draft is None:
         raise HTTPException(404, 'Taslak bulunamadı.')
@@ -32,14 +33,23 @@ def submit(assignment_id: int, code: CodeFiles, user: User = Depends(current_use
         raise HTTPException(409, 'Ödev zaten teslim edildi.')
     if draft.code != code.model_dump():
         raise HTTPException(409, 'Son değişiklikler henüz kaydedilmedi.')
+    check_result = None
+    if assignment.checker_enabled:
+        try:
+            check_result = run_checker(draft.code['html'], assignment.check_rules)
+        except ValueError as error:
+            raise HTTPException(413, str(error)) from error
+        except (TimeoutError, RuntimeError, EOFError) as error:
+            raise HTTPException(503, 'HTML kontrolü tamamlanamadı. Lütfen tekrar deneyin.') from error
     now = datetime.now(timezone.utc)
     if submission is None:
-        submission = Submission(assignment_id=assignment_id, student_id=user.id, final_code=draft.code, submitted_at=now, locked=True)
+        submission = Submission(assignment_id=assignment_id, student_id=user.id, final_code=draft.code, submitted_at=now, locked=True, check_result=check_result)
         db.add(submission)
     else:
         submission.final_code = draft.code
         submission.submitted_at = now
         submission.locked = True
+        submission.check_result = check_result
     started = draft.started_at if draft.started_at.tzinfo else draft.started_at.replace(tzinfo=timezone.utc)
     elapsed = min(2147483647, max(0, int((now - started).total_seconds() * 1000)))
     db.add(ReplayEvent(draft_id=draft.id, t_ms=elapsed, kind='submit', payload={}))
@@ -65,9 +75,13 @@ def get_submission(submission_id: int, user: User = Depends(current_user), db: S
     if user.id != submission.student_id and enrollment.role != 'teacher':
         raise HTTPException(403, 'Bu işlem için yetkiniz yok.')
     student = db.get(User, submission.student_id)
-    return {'id': submission.id, 'assignment_id': submission.assignment_id, 'student_id': submission.student_id,
+    result = {'id': submission.id, 'assignment_id': submission.assignment_id, 'student_id': submission.student_id,
             'student_name': student.name, 'final_code': submission.final_code,
             'submitted_at': submission.submitted_at.isoformat(), 'locked': submission.locked}
+    if assignment.checker_enabled and (enrollment.role == 'teacher' or assignment.show_results_to_student):
+        if submission.check_result is not None:
+            result['check_result'] = submission.check_result
+    return result
 
 
 @router.post('/submissions/{submission_id}/unlock')

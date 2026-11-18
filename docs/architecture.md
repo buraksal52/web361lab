@@ -11,7 +11,7 @@ Browser (Teams tab or direct)
 │  ├─ Preview (sandboxed iframe, srcdoc)           │
 │  ├─ Side panel (Markdown)                        │
 │  ├─ Replay recorder / player                     │
-│  ├─ Checker + writing checks (static analysis)   │
+│  ├─ Writing checks (static analysis)            │
 │  ├─ Instructor screens: assignment creation,     │
 │  │   rubric, reports                             │
 │  └─ Identity interface (IdentityProvider)        │
@@ -22,6 +22,7 @@ Browser (Teams tab or direct)
 │  ├─ Auth: IdentityProvider (MVP: demo mode)      │
 │  ├─ Assignment / submission / draft / rubric API │
 │  ├─ Replay event intake and queries              │
+│  ├─ Checker (bounded static HTML analysis)       │
 │  ├─ CSV export                                   │
 │  └─ Database (PostgreSQL)                         │
 └──────────────────────────────────────────────────┘
@@ -39,7 +40,7 @@ Code is never executed on the server. HTML/CSS/JS runs in the sandboxed iframe i
 | Replay recorder | Collects editor changes with timestamps, batches and sends them |
 | Replay player | Rebuilds the code by applying events from the start; offers speed and seeking |
 | Signal collector | Blocked pastes, tab loss, largest single insertion |
-| Checker | Parses the submitted HTML with `DOMParser`, counts elements against the instructor's required-element rules, produces the result |
+| Checker | Parses submitted HTML on the server without executing it, with size and time limits; counts elements against the instructor's rules |
 | Writing checker | Scans HTML/CSS/JS with linter tools, produces a report and Turkish messages |
 | Rubric service | Criteria, automatic results, suggested score, instructor score, feedback, CSV |
 | IdentityProvider | `getCurrentUser()` and `isEnrolled(course)` interface. Demo in the MVP, Entra later |
@@ -87,6 +88,8 @@ Check rules are defined with fields (the instructor never writes selectors) and 
 - A check means "used", not "works correctly". The UI and the pitch to the instructor are written accordingly.
 - The "must not be empty" option greatly reduces tricking the checker with empty tags (`<h1></h1>`).
 - When the checker is off, no check result is produced or shown.
+- Checker rules are omitted from student responses when visibility is disabled; results are disclosed only to the course instructor or the submitting student when the assignment permits it. Results contain a snapshot of the rules used at submission.
+- The standard-library HTML parser runs in a separate process, with a 256 KiB HTML limit and a five-second deadline. It does not execute code. Its handling of malformed HTML is simpler than a browser's HTML parser.
 
 ## 6. Writing checks (linter)
 
