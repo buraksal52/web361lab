@@ -52,6 +52,8 @@ p {
 }
 .topbar>div {
   min-height:38px;
+  max-width:1200px;
+  margin:auto;
   padding:0 40px;
   display:flex;
   justify-content:space-between;
@@ -61,6 +63,11 @@ p {
 .topbar a {
   color:inherit
 }
+.topbar-links {
+  display:flex;
+  align-items:center;
+  gap:24px
+}
 .site-header {
   min-height:72px;
   background:white;
@@ -69,7 +76,7 @@ p {
   align-items:center;
   flex-wrap:wrap;
   gap:8px 32px;
-  padding:0 40px
+  padding:0 max(40px, calc((100% - 1120px)/2))
 }
 .brand {
   display:inline-flex;
@@ -126,6 +133,22 @@ p {
   color:var(--navy);
   border-bottom-color:var(--navy)
 }
+.landing-nav a {
+  color:#344350;
+  font-size:14px;
+  font-weight:700
+}
+.header-signin {
+  display:inline-flex;
+  align-items:center;
+  min-height:38px;
+  padding:0 22px;
+  border-radius:999px;
+  background:var(--navy);
+  color:white;
+  font-size:13px;
+  font-weight:800
+}
 .teacher-nav span {
   color:var(--muted);
   font-size:12px;
@@ -178,26 +201,28 @@ p {
   background:white
 }
 .login-band {
-  background:#1c46ad;
-  padding:48px 40px
+  background:linear-gradient(115deg,#10275e 0%,#173f9a 32%,#1c46ad 32%,#244ec0 100%);
+  padding:30px 40px
 }
 .login-inner {
-  max-width:1360px;
+  max-width:1120px;
   margin:auto;
   display:flex;
   flex-wrap:wrap;
   align-items:center;
-  gap:40px
+  gap:32px
 }
 .login-hero {
-  flex:1.3 1 560px;
-  background:#1e273a;
+  flex:1.3 1 500px;
+  min-height:300px;
+  background:linear-gradient(90deg,rgba(13,28,66,.94),rgba(13,28,66,.38)),url('/images/lab-hero.webp') center/cover;
   color:white;
   border-radius:20px;
-  padding:56px;
+  padding:36px 40px;
   display:flex;
   flex-direction:column;
-  gap:24px
+  justify-content:center;
+  gap:14px
 }
 .eyebrow {
   color:#b9ccf5;
@@ -210,7 +235,7 @@ p {
 }
 .login-hero h1 {
   margin:0;
-  font-size:clamp(38px,4vw,52px);
+  font-size:clamp(32px,3vw,42px);
   line-height:1.1;
   font-weight:800
 }
@@ -222,19 +247,6 @@ p {
   font-size:17px;
   margin:0
 }
-.login-hero pre {
-  margin:0;
-  padding:20px 24px;
-  max-width:480px;
-  border-radius:10px;
-  background:white;
-  color:#22252f;
-  overflow-x:auto;
-  font:14px/1.8 'JetBrains Mono',monospace
-}
-.login-hero pre span {
-  color:var(--blue)
-}
 .login-panel {
   flex:1 1 330px;
   color:white;
@@ -244,7 +256,7 @@ p {
   gap:14px
 }
 .login-panel h2 {
-  font-size:34px;
+  font-size:30px;
   line-height:1.25;
   margin:0
 }
@@ -259,7 +271,7 @@ p {
 }
 .login-panel select {
   width:min(100%,480px);
-  height:50px;
+  height:44px;
   border:1px solid #d9e2f1;
   border-radius:10px;
   padding:0 14px;
@@ -268,8 +280,8 @@ p {
 }
 .login-button {
   border:0;
-  border-radius:10px;
-  min-height:52px;
+  border-radius:999px;
+  min-height:44px;
   padding:0 24px;
   background:white;
   color:var(--navy);
@@ -280,9 +292,9 @@ p {
   gap:20px
 }
 .feature-grid {
-  max-width:1440px;
+  max-width:1200px;
   margin:auto;
-  padding:48px 40px;
+  padding:48px 40px 72px;
   display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
   gap:20px
@@ -294,16 +306,25 @@ p {
   box-shadow:var(--shadow)
 }
 .feature-grid article {
-  padding:28px
+  overflow:hidden
 }
-.feature-symbol {
-  font:700 23px 'JetBrains Mono',monospace;
-  color:var(--navy)
+.feature-visual {
+  height:104px;
+  background-image:url('/images/lab-features.webp');
+  background-size:400% auto;
+  background-repeat:no-repeat
+}
+.feature-preview { background-position:0% center }
+.feature-content { background-position:33.333% center }
+.feature-rules { background-position:66.666% center }
+.feature-replay { background-position:100% center }
+.feature-copy {
+  padding:16px 18px 20px
 }
 .feature-grid h2 {
   color:var(--navy);
-  font-size:18px;
-  margin:16px 0 8px
+  font-size:16px;
+  margin:0 0 4px
 }
 .feature-grid p {
   margin:0;
@@ -741,6 +762,12 @@ input[type='checkbox'] {
   }
   .site-nav button {
     min-height:42px
+  }
+  .landing-nav {
+    margin-left:auto
+  }
+  .header-signin {
+    display:none
   }
   .teacher-nav span {
     display:none

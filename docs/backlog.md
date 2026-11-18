@@ -109,6 +109,7 @@ Status values: `todo`, `in progress`, `done`, `blocked`.
 S8 browser checks cover roster import, copying, paste and drop behavior, preview isolation, replay, result visibility, grading and CSV export. An instructor usability trial and manual accessibility review remain to be performed with an instructor.
 
 The existing MVP screens use the visual references in [design](design/DESIGN.md) for the shared layout, sign-in, assignments, editor and instructor views. Future-phase functionality shown in mockups remains outside the MVP.
+The sign-in screen also uses a narrower institutional layout, shorter hero and original programming-lab imagery while retaining the placeholder logo.
 
 ## Icebox (not scheduled; see [roadmap.md](roadmap.md))
 

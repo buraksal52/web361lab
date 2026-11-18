@@ -8,8 +8,9 @@ function Brand() {
 
 export function Layout({ children, signedIn, courseOpen, teacher, onCourses, onAssignments, onCreate, onLogout }: Props) {
   return <div className="app-shell">
-    <div className="topbar"><div><a href="https://ankarabilim.edu.tr">Ankara Bilim Üniversitesi</a><span>CENG 361 · pilot sürüm</span></div></div>
+    <div className="topbar"><div><span className="topbar-links"><a href="https://ankarabilim.edu.tr">Ankara Bilim Üniversitesi</a><a href="https://kutuphane.ankarabilim.edu.tr">Kütüphane</a></span><span>CENG 361 · pilot sürüm</span></div></div>
     <header className="site-header"><Brand />
+      {!signedIn && <><nav aria-label="Ana menü" className="site-nav landing-nav"><a href="#platform">Platform</a><a href="#giris">Derse giriş</a></nav><div className="header-spacer" /><a className="header-signin" href="#giris">Giriş yap</a></>}
       {signedIn && <><nav aria-label="Ders menüsü" className="site-nav"><button type="button" onClick={onCourses}>Dersler</button>{courseOpen && <button type="button" onClick={onAssignments}>Ödevler</button>}</nav>
         <div className="header-spacer" />
         {teacher && courseOpen && <nav aria-label="Öğretim üyesi" className="site-nav teacher-nav"><span>ÖĞRETİM ÜYESİ</span><button type="button" onClick={onCreate}>Ödev oluştur</button></nav>}
