@@ -30,4 +30,6 @@ Create the PostgreSQL database and a local development user first; the URL above
 
 The API provides `GET /hello`. Run tests with `npm test` in `frontend/` and `pytest` in `backend/`. The API tests use an isolated in-memory database; PostgreSQL migrations must also be verified against a PostgreSQL instance.
 
+For the fictional student roster and walkthrough, see [the demo scenario](docs/demo-scenario.md). The instructor imports [the sample CSV](docs/examples/mock-students.csv) from the course screen.
+
 Submission writing checks require Node.js `^20.19.0`, `^22.13.0`, or `>=24` at runtime and the installed `backend/lint-worker` dependencies. Student code is parsed as data and is not executed by the writing checks.

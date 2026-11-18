@@ -12,6 +12,10 @@ from models import Enrollment, User
 
 class IdentityProvider(ABC):
     @abstractmethod
+    def import_students(self, students: list[dict[str, str]], course_id: int, db: Session) -> dict[str, int]:
+        pass
+
+    @abstractmethod
     def login(self, user: User) -> str:
         pass
 
@@ -31,6 +35,25 @@ class IdentityProvider(ABC):
 class DemoIdentityProvider(IdentityProvider):
     def __init__(self):
         self.sessions: dict[str, int] = {}
+
+    def import_students(self, students: list[dict[str, str]], course_id: int, db: Session) -> dict[str, int]:
+        created = enrolled = 0
+        for student in students:
+            by_number = db.scalar(select(User).where(User.student_number == student['student_number']))
+            by_email = db.scalar(select(User).where(User.email == student['email']))
+            if (by_number and (by_number.email != student['email'] or by_number.role != 'student')) or (by_email and by_email != by_number):
+                raise HTTPException(409, 'Öğrenci numarası veya e-posta mevcut bir kullanıcıyla uyuşmuyor.')
+            user = by_number
+            if user is None:
+                user = User(**student, role='student')
+                db.add(user)
+                db.flush()
+                created += 1
+            if self.is_enrolled(user, course_id, db) is None:
+                db.add(Enrollment(user_id=user.id, course_id=course_id, role='student'))
+                enrolled += 1
+        db.commit()
+        return {'created': created, 'enrolled': enrolled}
 
     def login(self, user: User) -> str:
         token = secrets.token_urlsafe(32)

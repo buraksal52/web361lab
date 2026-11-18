@@ -99,12 +99,14 @@ Status values: `todo`, `in progress`, `done`, `blocked`.
 
 | ID | Item | Refs | Status |
 |---|---|---|---|
-| S8-01 | Student list upload from CSV for demo login (150 fictional students prepared in [mock-students.csv](examples/mock-students.csv); upload remains) | FR-14 | in progress |
-| S8-02 | Error messages and empty states | NFR-07 | todo |
-| S8-03 | Accessibility pass (keyboard use, contrast) | NFR-07 | todo |
-| S8-04 | Demo data and demo scenario | R10 | todo |
-| S8-05 | Copy an assignment with its settings and criteria (Could) | FR-23, R16 | todo |
-| S8-06 | Final manual checklist. **Full MVP demo ready** | [test-strategy.md](test-strategy.md) | todo |
+| S8-01 | Student list upload from CSV for demo login; [150 fictional students](examples/mock-students.csv) | FR-14 | done |
+| S8-02 | Error messages and empty states | NFR-07 | done |
+| S8-03 | Accessibility pass (keyboard use, contrast) | NFR-07 | in progress |
+| S8-04 | Demo data and [demo scenario](demo-scenario.md) | R10 | done |
+| S8-05 | Copy an assignment with its settings and criteria (Could) | FR-23, R16 | done |
+| S8-06 | Final manual checklist. **Full MVP demo ready** | [test-strategy.md](test-strategy.md) | in progress |
+
+S8 browser checks cover roster import, copying, paste and drop behavior, preview isolation, replay, result visibility, grading and CSV export. An instructor usability trial and manual accessibility review remain to be performed with an instructor.
 
 ## Icebox (not scheduled; see [roadmap.md](roadmap.md))
 

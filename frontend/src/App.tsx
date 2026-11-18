@@ -6,6 +6,8 @@ import { Preview } from './Preview'
 import { request, type Assignment, type Course, type User } from './api'
 import { StudentWorkspace } from './StudentWorkspace'
 import { SubmissionReview } from './SubmissionReview'
+import { StudentRoster } from './StudentRoster'
+import { copyAssignment } from './copyAssignment'
 import './style.css'
 
 export function App() {
@@ -106,12 +108,13 @@ export function App() {
     setCourse(null)
     setSelected(null)
     setEditing(null)
+    try { setUsers(await request<User[]>('/demo/users')) } catch { setError('Kullanıcı listesi alınamadı.') }
   }
 
   return <main>
     <h1>web361lab</h1>
     {error && <p role="alert">{error}</p>}
-    {!token ? <section><h2>Demo girişi</h2><p>Bir kullanıcı seçin.</p>{users.map((user) => <button key={user.id} onClick={() => login(user.id)}>{user.name} ({user.role === 'teacher' ? 'Öğretim elemanı' : 'Öğrenci'})</button>)}</section> : <>
+    {!token ? <section><h2>Demo girişi</h2><p>Bir kullanıcı seçin.</p>{users.length === 0 && <p>Kullanıcı bulunamadı.</p>}{users.map((user) => <button key={user.id} onClick={() => login(user.id)}>{user.name}{user.student_number ? ` — ${user.student_number}` : ''} ({user.role === 'teacher' ? 'Öğretim elemanı' : 'Öğrenci'})</button>)}</section> : <>
       <button onClick={logout}>Çıkış</button>
       {!identity ? <p>Oturum yükleniyor…</p> : identity.role === 'student' && !identity.recording_consent ? <section>
         <h2>Çalışma kaydı hakkında</h2>
@@ -123,6 +126,7 @@ export function App() {
       </section> : !course ? <section><h2>Dersler</h2>{courses.length === 0 && <p>Kayıtlı dersiniz bulunmuyor.</p>}{courses.map((item) => <button key={item.id} onClick={() => openCourse(item)}>{item.name}</button>)}</section> : <>
         <button onClick={() => { sessionStorage.removeItem('web361lab.course'); sessionStorage.removeItem('web361lab.assignment'); setCourse(null); setSelected(null); setEditing(null) }}>Dersler</button>
         <h2>{course.name}</h2>
+        {course.role === 'teacher' && !selected && !editing && <StudentRoster courseId={course.id} token={token} />}
         {editing ? <AssignmentForm assignment={editing} onChange={setEditing} onSave={saveAssignment} onCancel={() => setEditing(null)} /> : selected ? <section>
           <button onClick={() => { sessionStorage.removeItem('web361lab.assignment'); setSelected(null) }}>Ödevler</button>
           <h3>{selected.title}</h3>
@@ -138,7 +142,7 @@ export function App() {
             <aside><h3>Ders içeriği</h3><ReactMarkdown>{selected.side_panel_md}</ReactMarkdown></aside>
           </div>}
           {course.role === 'teacher' && <SubmissionReview key={selected.id} assignment={selected} token={token} />}
-        </section> : <section><h3>Ödevler</h3>{course.role === 'teacher' && <button onClick={newAssignment}>Yeni ödev</button>}{assignments.map((assignment) => <div key={assignment.id}><button onClick={() => openAssignment(assignment)}>{assignment.title}</button>{course.role === 'teacher' && <button onClick={() => setEditing(assignment)}>Düzenle</button>}</div>)}</section>}
+        </section> : <section><h3>Ödevler</h3>{course.role === 'teacher' && <button onClick={newAssignment}>Yeni ödev</button>}{assignments.length === 0 && <p>Bu derste henüz ödev yok.</p>}{assignments.map((assignment) => <div key={assignment.id}><button onClick={() => openAssignment(assignment)}>{assignment.title}</button>{course.role === 'teacher' && <><button aria-label={`${assignment.title} ödevini düzenle`} onClick={() => setEditing(assignment)}>Düzenle</button><button aria-label={`${assignment.title} ödevini kopyala`} onClick={() => setEditing(copyAssignment(assignment))}>Kopyala</button></>}</div>)}</section>}
       </>}
     </>}
   </main>

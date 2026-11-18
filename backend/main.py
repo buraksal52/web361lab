@@ -11,11 +11,13 @@ from schemas import AssignmentInput, AssignmentOut, CriterionInput
 from drafts import router as drafts_router
 from submissions import router as submissions_router
 from evaluations import router as evaluations_router
+from roster import router as roster_router
 
 app = FastAPI()
 app.include_router(drafts_router)
 app.include_router(submissions_router)
 app.include_router(evaluations_router)
+app.include_router(roster_router)
 app.add_middleware(CORSMiddleware, allow_origins=['http://localhost:5173', 'http://127.0.0.1:5173'], allow_methods=['GET', 'POST', 'PUT'], allow_headers=['Authorization', 'Content-Type'])
 
 
@@ -26,7 +28,7 @@ def hello():
 
 @app.get('/demo/users')
 def demo_users(db: Session = Depends(get_db)):
-    return [{'id': user.id, 'name': user.name, 'role': user.role} for user in db.scalars(select(User)).all()]
+    return [{'id': user.id, 'name': user.name, 'role': user.role, 'student_number': user.student_number} for user in db.scalars(select(User)).all()]
 
 
 @app.post('/demo/login/{user_id}')

@@ -13,6 +13,7 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(200))
     email: Mapped[str] = mapped_column(String(320), unique=True)
+    student_number: Mapped[str | None] = mapped_column(String(9), unique=True, nullable=True)
     role: Mapped[str] = mapped_column(String(20))
     recording_consent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 

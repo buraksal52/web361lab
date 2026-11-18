@@ -1,6 +1,9 @@
 body { font-family: sans-serif; margin: 1.5rem; }
-button, input, textarea { font: inherit; }
+button, input, textarea, select { font: inherit; }
 button { margin: 0.25rem; }
+button:not(:disabled) { cursor: pointer; }
+:focus-visible { outline: 3px solid #005fcc; outline-offset: 2px; }
+button:disabled { color: #555; }
 form label { display: block; margin: 0.75rem 0; }
 form textarea { display: block; width: min(100%, 40rem); min-height: 5rem; }
 .workspace { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }

@@ -1,6 +1,6 @@
 import type { CodeFiles, Language } from './Editor'
 
-export type User = { id: number; name: string; role: string }
+export type User = { id: number; name: string; role: string; student_number?: string | null }
 export type Course = { id: number; name: string; role: string }
 export type CheckRule = { id: string; tag: string; attrs: Record<string, string>; min_count: number; non_empty: boolean; inside: string | null; label_linked: boolean }
 export type CheckResult = { rule: CheckRule; count: number; used: boolean }

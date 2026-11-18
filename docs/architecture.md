@@ -30,6 +30,8 @@ Browser (Teams tab or direct)
 
 Code is never executed on the server. HTML/CSS/JS runs in the sandboxed iframe in the browser. The checker and linter do **not run** code, they only parse it. The server stores assignment, draft, submission, replay and evaluation data.
 
+In demo mode, instructors can import a UTF-8 student roster through the identity provider. Nine-digit student numbers are unique; repeated imports are idempotent and conflicting identities are rejected. Demo login is not authentication and must not be used for a production deployment.
+
 ## 2. Components
 
 | Component | Responsibility |
