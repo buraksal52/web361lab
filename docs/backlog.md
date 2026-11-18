@@ -99,7 +99,7 @@ Status values: `todo`, `in progress`, `done`, `blocked`.
 
 | ID | Item | Refs | Status |
 |---|---|---|---|
-| S8-01 | Student list upload from CSV for demo login | FR-14 | todo |
+| S8-01 | Student list upload from CSV for demo login (150 fictional students prepared in [mock-students.csv](examples/mock-students.csv); upload remains) | FR-14 | in progress |
 | S8-02 | Error messages and empty states | NFR-07 | todo |
 | S8-03 | Accessibility pass (keyboard use, contrast) | NFR-07 | todo |
 | S8-04 | Demo data and demo scenario | R10 | todo |
