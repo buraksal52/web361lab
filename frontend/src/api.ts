@@ -5,6 +5,7 @@ export type Course = { id: number; name: string; role: string }
 export type CheckRule = { id: string; tag: string; attrs: Record<string, string>; min_count: number; non_empty: boolean; inside: string | null; label_linked: boolean }
 export type CheckResult = { rule: CheckRule; count: number; used: boolean }
 export type LintIssue = { language: string; rule: string; message: string; raw_message: string; line: number; column: number; severity: 'error' | 'warning' }
+export type Criterion = { id: string; kind: 'auto' | 'manual'; label: string; max_points: string; check_rule_ref: string | null }
 export type Assignment = {
   id: number
   course_id: number
@@ -20,6 +21,7 @@ export type Assignment = {
   show_results_to_student: boolean
   diagnostics_enabled: boolean
   lint_rules?: string[]
+  criteria?: Criterion[]
   due_at: string | null
 }
 

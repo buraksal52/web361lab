@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 from database import get_db
 from identity import bearer, current_user, provider, require_enrollment
 from fastapi.security import HTTPAuthorizationCredentials
-from models import Assignment, Course, Enrollment, User
-from schemas import AssignmentInput, AssignmentOut
+from models import Assignment, Course, Criterion, Enrollment, User
+from schemas import AssignmentInput, AssignmentOut, CriterionInput
 from drafts import router as drafts_router
 from submissions import router as submissions_router
 
@@ -53,13 +53,32 @@ def assignment_response(assignment: Assignment, role: str):
         result['check_rules'] = None
     if role != 'teacher':
         result['lint_rules'] = None
+        result['criteria'] = None
     return result
 
 
 def assignment_values(data: AssignmentInput):
-    result = data.model_dump()
+    result = data.model_dump(exclude={'criteria'})
     result['check_rules'] = [rule.model_dump(mode='json') for rule in data.check_rules]
     return result
+
+
+def set_criteria(assignment: Assignment, criteria: list[CriterionInput], db: Session):
+    existing = {item.id: item for item in assignment.criteria}
+    for criterion in criteria:
+        found = db.get(Criterion, str(criterion.id))
+        if found is not None and found.assignment_id != assignment.id:
+            raise HTTPException(400, 'Bu kriter kimliği başka bir ödeve ait.')
+    selected = []
+    for position, data in enumerate(criteria):
+        criterion = existing.get(str(data.id)) or Criterion(id=str(data.id))
+        criterion.kind = data.kind
+        criterion.label = data.label
+        criterion.max_points = data.max_points
+        criterion.check_rule_ref = str(data.check_rule_ref) if data.check_rule_ref else None
+        criterion.position = position
+        selected.append(criterion)
+    assignment.criteria = selected
 
 
 @app.get('/courses/{course_id}/assignments', response_model=list[AssignmentOut], response_model_exclude_none=True)
@@ -82,6 +101,7 @@ def create_assignment(data: AssignmentInput, user: User = Depends(current_user),
     require_enrollment(user, data.course_id, db, 'teacher')
     assignment = Assignment(**assignment_values(data))
     db.add(assignment)
+    set_criteria(assignment, data.criteria, db)
     db.commit()
     db.refresh(assignment)
     return assignment
@@ -95,8 +115,16 @@ def update_assignment(assignment_id: int, data: AssignmentInput, user: User = De
     require_enrollment(user, assignment.course_id, db, 'teacher')
     if data.course_id != assignment.course_id:
         raise HTTPException(400, 'Ödevin dersi değiştirilemez.')
+    if 'criteria' not in data.model_fields_set:
+        existing = [CriterionInput.model_validate(item) for item in assignment.criteria]
+        try:
+            AssignmentInput.model_validate({**data.model_dump(), 'criteria': existing})
+        except ValueError as error:
+            raise HTTPException(422, 'Mevcut kriterlerin kontrol kuralları korunmalı.') from error
     for key, value in assignment_values(data).items():
         setattr(assignment, key, value)
+    if 'criteria' in data.model_fields_set:
+        set_criteria(assignment, data.criteria, db)
     db.commit()
     db.refresh(assignment)
     return assignment

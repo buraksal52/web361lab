@@ -211,3 +211,43 @@ def test_writing_check_failure_does_not_submit(client, monkeypatch):
     response = client.post(f'/assignments/{assignment_id}/submit', headers=student, json={'html': '', 'css': '', 'javascript': ''})
     assert response.status_code == 503
     assert client.get(f'/assignments/{assignment_id}/submissions', headers=teacher).json() == []
+
+
+def test_assignment_criteria_are_validated_saved_and_private(client):
+    teacher, student, outsider = auth(client, 1), auth(client, 2), auth(client, 3)
+    rule_id, auto_id, manual_id = str(uuid4()), str(uuid4()), str(uuid4())
+    payload = {
+        'course_id': 1, 'title': 'Rubrik', 'enabled_languages': ['html'], 'checker_enabled': True,
+        'check_rules': [{'id': rule_id, 'tag': 'h1'}],
+        'criteria': [
+            {'id': auto_id, 'kind': 'auto', 'label': 'Başlık kullanımı', 'max_points': '12.50', 'check_rule_ref': rule_id},
+            {'id': manual_id, 'kind': 'manual', 'label': 'Sunum', 'max_points': '7.25', 'check_rule_ref': None},
+        ],
+    }
+    response = client.post('/assignments', headers=student, json=payload)
+    assert response.status_code == 403
+    response = client.post('/assignments', headers=teacher, json=payload)
+    assert response.status_code == 201, response.text
+    assignment_id = response.json()['id']
+    assert [(item['kind'], item['max_points']) for item in response.json()['criteria']] == [('auto', '12.50'), ('manual', '7.25')]
+    url = f'/assignments/{assignment_id}'
+    assert 'criteria' not in client.get(url, headers=student).json()
+    assert client.get(url, headers=outsider).status_code == 403
+    assert 'criteria' not in client.get('/courses/1/assignments', headers=student).json()[0]
+    payload['criteria'][1]['max_points'] = '8.00'
+    assert client.put(url, headers=teacher, json=payload).json()['criteria'][1]['max_points'] == '8.00'
+    without_criteria = {key: value for key, value in payload.items() if key != 'criteria'}
+    assert len(client.put(url, headers=teacher, json=without_criteria).json()['criteria']) == 2
+    without_criteria['checker_enabled'] = False
+    assert len(client.put(url, headers=teacher, json=without_criteria).json()['criteria']) == 2
+    payload['check_rules'] = []
+    assert client.put(url, headers=teacher, json=payload).status_code == 422
+    payload['check_rules'] = [{'id': rule_id, 'tag': 'h1'}]
+    payload['criteria'][0]['max_points'] = '-1'
+    assert client.put(url, headers=teacher, json=payload).status_code == 422
+    payload['criteria'] = [payload['criteria'][1]]
+    payload['check_rules'] = []
+    payload['checker_enabled'] = False
+    response = client.put(url, headers=teacher, json=payload)
+    assert response.status_code == 200
+    assert [item['id'] for item in response.json()['criteria']] == [manual_id]

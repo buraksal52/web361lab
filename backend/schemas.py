@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from typing import Literal
 from uuid import UUID
 
@@ -40,6 +41,21 @@ class CodeFiles(BaseModel):
     javascript: str = ''
 
 
+class CriterionInput(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: UUID
+    kind: Literal['auto', 'manual']
+    label: str = Field(min_length=1, max_length=200)
+    max_points: Decimal = Field(ge=0, max_digits=10, decimal_places=2)
+    check_rule_ref: UUID | None = None
+
+    @model_validator(mode='after')
+    def validate_rule_reference(self):
+        if (self.kind == 'auto') != (self.check_rule_ref is not None):
+            raise ValueError('Automatic criteria require a check rule; manual criteria cannot reference one')
+        return self
+
+
 class AssignmentInput(BaseModel):
     course_id: int
     title: str = Field(min_length=1, max_length=200)
@@ -54,6 +70,7 @@ class AssignmentInput(BaseModel):
     show_results_to_student: bool = False
     diagnostics_enabled: bool = False
     lint_rules: list[LintRule] = Field(default_factory=list, max_length=13)
+    criteria: list[CriterionInput] = Field(default_factory=list, max_length=100)
     due_at: datetime | None = None
 
     @field_validator('check_rules')
@@ -63,12 +80,24 @@ class AssignmentInput(BaseModel):
             raise ValueError('Rule IDs must be unique')
         return rules
 
+    @model_validator(mode='after')
+    def validate_criteria(self):
+        if self.criteria is None:
+            return self
+        if len({criterion.id for criterion in self.criteria}) != len(self.criteria):
+            raise ValueError('Criterion IDs must be unique')
+        rule_ids = {rule.id for rule in self.check_rules or []}
+        if any(criterion.check_rule_ref not in rule_ids for criterion in self.criteria if criterion.kind == 'auto'):
+            raise ValueError('Automatic criteria must reference an existing check rule')
+        return self
+
 
 class AssignmentOut(AssignmentInput):
     model_config = ConfigDict(from_attributes=True)
     id: int
     check_rules: list[CheckRule] | None = None
     lint_rules: list[LintRule] | None = None
+    criteria: list[CriterionInput] | None = None
 
 
 class EditChange(BaseModel):

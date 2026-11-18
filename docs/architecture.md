@@ -84,6 +84,7 @@ Check rules are defined with fields (the instructor never writes selectors) and 
 
 - The checker parses the submitted HTML and counts the elements that satisfy the rule. Result: pass/fail and the count found.
 - An automatic criterion either passes or fails (no partial credit, to keep it simple).
+- Criterion IDs are stable, maximum points use two-decimal precision, and automatic criteria reference existing checker-rule IDs. The criteria configuration is currently returned only to the instructor; student visibility is added in S7-05.
 - **Suggested score** = sum of the maximum points of passed automatic criteria + the manual points the instructor enters. The instructor can change any criterion. The **final score** is what the instructor saves.
 - A check means "used", not "works correctly". The UI and the pitch to the instructor are written accordingly.
 - The "must not be empty" option greatly reduces tricking the checker with empty tags (`<h1></h1>`).

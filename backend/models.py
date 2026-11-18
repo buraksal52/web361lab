@@ -1,7 +1,9 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, JSON, String, Text, UniqueConstraint
-from sqlalchemy.orm import Mapped, mapped_column
+from decimal import Decimal
+
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, JSON, Numeric, String, Text, UniqueConstraint
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Base
 
@@ -47,6 +49,18 @@ class Assignment(Base):
     diagnostics_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
     lint_rules: Mapped[list] = mapped_column(JSON, default=list)
     due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    criteria: Mapped[list['Criterion']] = relationship(cascade='all, delete-orphan', order_by='Criterion.position')
+
+
+class Criterion(Base):
+    __tablename__ = 'criteria'
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    assignment_id: Mapped[int] = mapped_column(ForeignKey('assignments.id'))
+    kind: Mapped[str] = mapped_column(String(10))
+    label: Mapped[str] = mapped_column(String(200))
+    max_points: Mapped[Decimal] = mapped_column(Numeric(10, 2))
+    check_rule_ref: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    position: Mapped[int] = mapped_column(Integer)
 
 
 class Draft(Base):

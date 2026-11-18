@@ -2,6 +2,7 @@ import type { Assignment } from './api'
 import type { Language } from './Editor'
 import { CheckerRules } from './CheckerRules'
 import { WritingRules } from './WritingRules'
+import { RubricEditor } from './RubricEditor'
 
 type Props = {
   assignment: Assignment
@@ -19,6 +20,9 @@ function localDateTime(value: string | null) {
 }
 
 export function AssignmentForm({ assignment, onChange, onSave, onCancel }: Props) {
+  const criteria = assignment.criteria ?? []
+  const rules = assignment.check_rules ?? []
+  const missingRule = criteria.some((criterion) => criterion.kind === 'auto' && !rules.some((rule) => rule.id === criterion.check_rule_ref))
   function update(key: keyof Assignment, value: unknown) {
     onChange({ ...assignment, [key]: value })
   }
@@ -47,7 +51,9 @@ export function AssignmentForm({ assignment, onChange, onSave, onCancel }: Props
       <CheckerRules rules={assignment.check_rules ?? []} onChange={(rules) => update('check_rules', rules)} />
       <label><input type="checkbox" checked={assignment.show_results_to_student} onChange={(event) => update('show_results_to_student', event.target.checked)} /> Kontrol kurallarını ve sonuçlarını öğrenciye göster</label>
     </>}
-    <button type="submit" disabled={assignment.enabled_languages.length === 0}>Kaydet</button>
+    <RubricEditor criteria={criteria} rules={rules} checkerEnabled={assignment.checker_enabled} onChange={(value) => update('criteria', value)} />
+    {missingRule && <p role="alert">Otomatik kriterler için bir kontrol kuralı seçin veya ilgili kriteri kaldırın.</p>}
+    <button type="submit" disabled={assignment.enabled_languages.length === 0 || missingRule}>Kaydet</button>
     <button type="button" onClick={onCancel}>İptal</button>
   </form>
 }

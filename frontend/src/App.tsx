@@ -92,7 +92,7 @@ export function App() {
 
   function newAssignment() {
     if (!course) return
-    setEditing({ id: 0, course_id: course.id, title: '', description_md: '', side_panel_md: '', starter_code: { html: '', css: '', javascript: '' }, enabled_languages: ['html'], intellisense_enabled: true, paste_enabled: true, diagnostics_enabled: false, lint_rules: [], checker_enabled: false, check_rules: [], show_results_to_student: false, due_at: null })
+    setEditing({ id: 0, course_id: course.id, title: '', description_md: '', side_panel_md: '', starter_code: { html: '', css: '', javascript: '' }, enabled_languages: ['html'], intellisense_enabled: true, paste_enabled: true, diagnostics_enabled: false, lint_rules: [], checker_enabled: false, check_rules: [], show_results_to_student: false, criteria: [], due_at: null })
   }
 
   async function logout() {
