@@ -68,6 +68,7 @@ class AssignmentInput(BaseModel):
     checker_enabled: bool = False
     check_rules: list[CheckRule] = Field(default_factory=list, max_length=100)
     show_results_to_student: bool = False
+    show_criteria_to_student: bool = False
     diagnostics_enabled: bool = False
     lint_rules: list[LintRule] = Field(default_factory=list, max_length=13)
     criteria: list[CriterionInput] = Field(default_factory=list, max_length=100)
@@ -87,7 +88,7 @@ class AssignmentInput(BaseModel):
         if len({criterion.id for criterion in self.criteria}) != len(self.criteria):
             raise ValueError('Criterion IDs must be unique')
         rule_ids = {rule.id for rule in self.check_rules or []}
-        if any(criterion.check_rule_ref not in rule_ids for criterion in self.criteria if criterion.kind == 'auto'):
+        if self.check_rules is not None and any(criterion.check_rule_ref not in rule_ids for criterion in self.criteria if criterion.kind == 'auto'):
             raise ValueError('Automatic criteria must reference an existing check rule')
         return self
 
@@ -121,3 +122,17 @@ class DraftBatch(BaseModel):
     batch_id: UUID
     code: CodeFiles
     events: list[ReplayEventInput] = Field(max_length=1000)
+
+
+class CriterionScoreInput(BaseModel):
+    criterion_id: UUID
+    manual_points: Decimal | None = Field(default=None, ge=0, max_digits=10, decimal_places=2)
+    teacher_override: bool | None = None
+
+
+class EvaluationInput(BaseModel):
+    final_points: Decimal = Field(ge=0, max_digits=12, decimal_places=2)
+    feedback: str = Field(default='', max_length=5000)
+    submitted_at: datetime
+    rubric_fingerprint: str = Field(min_length=64, max_length=64)
+    criteria: list[CriterionScoreInput] = Field(max_length=100)

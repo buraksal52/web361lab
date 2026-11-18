@@ -10,10 +10,12 @@ from models import Assignment, Course, Criterion, Enrollment, User
 from schemas import AssignmentInput, AssignmentOut, CriterionInput
 from drafts import router as drafts_router
 from submissions import router as submissions_router
+from evaluations import router as evaluations_router
 
 app = FastAPI()
 app.include_router(drafts_router)
 app.include_router(submissions_router)
+app.include_router(evaluations_router)
 app.add_middleware(CORSMiddleware, allow_origins=['http://localhost:5173', 'http://127.0.0.1:5173'], allow_methods=['GET', 'POST', 'PUT'], allow_headers=['Authorization', 'Content-Type'])
 
 
@@ -53,7 +55,8 @@ def assignment_response(assignment: Assignment, role: str):
         result['check_rules'] = None
     if role != 'teacher':
         result['lint_rules'] = None
-        result['criteria'] = None
+        if not assignment.show_criteria_to_student:
+            result['criteria'] = None
     return result
 
 

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>CENG 361 Teslimler</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Nunito Sans',sans-serif}
+a{color:#1e51cb}a:hover{color:#112e6e}
+input,textarea,select{font-family:'Nunito Sans',sans-serif}
+</style>
+</helmet>
+<div style="min-height:1430px;background:#f3f6f9;font-family:'Nunito Sans',sans-serif;color:#22252f;display:flex;flex-direction:column">
+    <div style="background:#f6f6f6;border-bottom:1px solid #eeeeee"><div style="padding:0 40px;min-height:38px;display:flex;align-items:center;justify-content:space-between;gap:4px 24px;flex-wrap:wrap;font-size:12.6px;font-weight:500;color:#344350"><span style="display:flex;gap:4px 20px;flex-wrap:wrap;align-items:center"><a href="https://ankarabilim.edu.tr" style="color:#344350;text-decoration:none">Ankara Bilim Üniversitesi</a><a href="Main.dc.html" style="color:#344350;text-decoration:none">Giriş</a></span><span style="display:flex;gap:4px 20px;flex-wrap:wrap;align-items:center"><span>CENG 361 · pilot sürüm</span><a href="#" style="color:#344350;text-decoration:none">İletişim</a></span></div></div>
+  <header style="display:flex;align-items:center;flex-wrap:wrap;gap:8px 32px;padding:0 40px;min-height:72px;background:#fff;border-bottom:1px solid #d9e2f1">
+    <a href="Main.dc.html" style="display:flex;align-items:center;gap:12px;text-decoration:none">
+      <span style="width:40px;height:40px;border-radius:10px;background:#112e6e;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px">ABÜ</span>
+      <span style="display:flex;flex-direction:column;line-height:1.15"><span style="font-weight:800;font-size:16px;color:#112e6e">CENG 361 Lab</span><span style="font-size:12px;color:#526179">Ankara Bilim Üniversitesi</span></span>
+    </a>
+    <nav aria-label="Öğrenci" style="display:flex;gap:24px;flex-wrap:wrap">
+      <a href="Ders.dc.html" style="height:72px;box-sizing:border-box;display:flex;align-items:center;font-weight:600;font-size:15px;color:#344350;text-decoration:none;border-bottom:3px solid transparent">Ders</a>
+      <a href="Konular.dc.html" style="height:72px;box-sizing:border-box;display:flex;align-items:center;font-weight:600;font-size:15px;color:#344350;text-decoration:none;border-bottom:3px solid transparent">Konular</a>
+      <a href="Odevler.dc.html" style="height:72px;box-sizing:border-box;display:flex;align-items:center;font-weight:600;font-size:15px;color:#344350;text-decoration:none;border-bottom:3px solid transparent">Ödevler</a>
+    </nav>
+    <span style="flex:1"></span>
+    <nav aria-label="Öğretim üyesi" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+      <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;color:#526179">ÖĞRETİM ÜYESİ</span>
+      <a href="OdevOlustur.dc.html" style="height:72px;box-sizing:border-box;display:flex;align-items:center;font-weight:600;font-size:15px;color:#344350;text-decoration:none;border-bottom:3px solid transparent">Ödev oluştur</a>
+      <a href="Teslimler.dc.html" style="height:72px;box-sizing:border-box;display:flex;align-items:center;font-weight:700;font-size:15px;color:#112e6e;text-decoration:none;border-bottom:3px solid #112e6e">Teslimler</a>
+    </nav>
+  </header>
+
+  <main style="width:100%;max-width:1320px;margin:0 auto;box-sizing:border-box;padding:40px;display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <h1 style="margin:0;font-size:34px;font-weight:800;color:#112e6e">Teslimler</h1>
+        <p style="margin:0;font-size:16px;color:#526179">Bir ödev seç, teslimleri incele, puan ver.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;min-width:260px">
+        <label for="odev" style="font-size:13px;font-weight:700;color:#344350">Ödev</label>
+        <select id="odev" style="height:48px;box-sizing:border-box;padding:0 12px;border:1px solid #9fb0cc;border-radius:10px;font-size:16px;color:#22252f;background:#fff"><option>Ödev 3 · CSS Seçiciler</option><option>Ödev 2 · Form Sayfası</option></select>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+      <section style="flex:1.4 1 620px;min-width:0;background:#fff;border:1px solid #e6ebef;border-radius:14px;box-shadow:0 6px 24px rgba(17,46,110,0.06);overflow-x:auto">
+        <div style="min-width:640px;display:flex;flex-direction:column">
+          <div style="display:grid;grid-template-columns:minmax(0,1.6fr) 130px 110px 90px 120px;gap:12px;padding:14px 24px;background:#f3f6f9;border-bottom:1px solid #d9e2f1;font-size:12px;font-weight:700;letter-spacing:0.06em;color:#526179">
+            <span>ÖĞRENCİ</span><span>TESLİM</span><span>KURALLAR</span><span>PUAN</span><span>DURUM</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1.6fr) 130px 110px 90px 120px;gap:12px;padding:16px 24px;align-items:center;border-bottom:1px solid #e6ebef">
+            <span style="display:flex;flex-direction:column"><span style="font-weight:700;font-size:15px">Öğrenci 1</span><span style="font-size:13px;color:#526179">20230001</span></span>
+            <span style="font-size:14px;color:#344350">22 Kas, 18:02</span>
+            <span style="font-size:14px;font-weight:700;color:#1b6e3a">4 / 4</span>
+            <span style="font-size:14px;font-weight:700">100</span>
+            <span><span style="font-size:12px;font-weight:700;color:#1b6e3a;background:#e6f4ea;border-radius:999px;padding:4px 10px">Notlandı</span></span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1.6fr) 130px 110px 90px 120px;gap:12px;padding:16px 24px;align-items:center;border-bottom:1px solid #e6ebef;background:#edf4ff;box-shadow:inset 4px 0 0 #112e6e">
+            <span style="display:flex;flex-direction:column"><span style="font-weight:800;font-size:15px;color:#112e6e">Öğrenci 2</span><span style="font-size:13px;color:#344350">20230002</span></span>
+            <span style="font-size:14px;color:#344350">23 Kas, 21:14</span>
+            <span style="font-size:14px;font-weight:700;color:#a02018">3 / 4</span>
+            <span style="font-size:14px;font-weight:700;color:#526179">75</span>
+            <span><span style="font-size:12px;font-weight:700;color:#112e6e;background:#fff;border:1px solid #9fb0cc;border-radius:999px;padding:3px 10px">İnceleniyor</span></span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1.6fr) 130px 110px 90px 120px;gap:12px;padding:16px 24px;align-items:center;border-bottom:1px solid #e6ebef">
+            <span style="display:flex;flex-direction:column"><span style="font-weight:700;font-size:15px">Öğrenci 3</span><span style="font-size:13px;color:#526179">20230003</span></span>
+            <span style="font-size:14px;color:#344350">24 Kas, 23:41</span>
+            <span style="font-size:14px;font-weight:700;color:#1b6e3a">4 / 4</span>
+            <span style="font-size:14px;font-weight:700;color:#526179">100</span>
+            <span><span style="font-size:12px;font-weight:700;color:#7a4b00;background:#fff4d6;border-radius:999px;padding:4px 10px">Bekliyor</span></span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1.6fr) 130px 110px 90px 120px;gap:12px;padding:16px 24px;align-items:center;border-bottom:1px solid #e6ebef">
+            <span style="display:flex;flex-direction:column"><span style="font-weight:700;font-size:15px">Öğrenci 4</span><span style="font-size:13px;color:#526179">20230004</span></span>
+            <span style="font-size:14px;color:#344350">24 Kas, 23:58</span>
+            <span style="font-size:14px;font-weight:700;color:#a02018">2 / 4</span>
+            <span style="font-size:14px;font-weight:700;color:#526179">50</span>
+            <span><span style="font-size:12px;font-weight:700;color:#7a4b00;background:#fff4d6;border-radius:999px;padding:4px 10px">Bekliyor</span></span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1.6fr) 130px 110px 90px 120px;gap:12px;padding:16px 24px;align-items:center">
+            <span style="display:flex;flex-direction:column"><span style="font-weight:700;font-size:15px">Öğrenci 5</span><span style="font-size:13px;color:#526179">20230005</span></span>
+            <span style="font-size:14px;color:#526179">Teslim yok</span>
+            <span style="font-size:14px;color:#526179">·</span>
+            <span style="font-size:14px;color:#526179">·</span>
+            <span><span style="font-size:12px;font-weight:700;color:#526179;background:#f1f1f1;border-radius:999px;padding:4px 10px">Teslim yok</span></span>
+          </div>
+        </div>
+      </section>
+
+      <aside aria-label="Teslim detayı" style="flex:1 1 380px;min-width:0;background:#fff;border:1px solid #e6ebef;border-radius:14px;box-shadow:0 6px 24px rgba(17,46,110,0.06);overflow:hidden">
+        <div style="padding:20px 24px;border-bottom:1px solid #d9e2f1;display:flex;flex-direction:column;gap:2px">
+          <span style="font-size:13px;font-weight:700;letter-spacing:0.06em;color:#526179">TESLİM DETAYI</span>
+          <span style="font-size:20px;font-weight:800;color:#112e6e">Öğrenci 2 · 20230002</span>
+        </div>
+        <div style="padding:20px 24px;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:14px;font-weight:700;color:#344350">Gönderilen kod</span>
+            <div style="background:#f3f6f9;border:1px solid #e6ebef;border-radius:14px;box-shadow:0 6px 24px rgba(17,46,110,0.06);padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:22px;white-space:pre;overflow-x:auto"><span style="color:#1e51cb">.kart</span> { <span style="color:#7a3a8c">padding</span>: <span style="color:#1b6e3a">16px</span>; }
+<span style="color:#1e51cb">#baslik</span> { <span style="color:#7a3a8c">color</span>: <span style="color:#1b6e3a">#112e6e</span>; }
+<span style="color:#1e51cb">&lt;h1</span> <span style="color:#7a3a8c">id</span>=<span style="color:#1b6e3a">"baslik"</span><span style="color:#1e51cb">&gt;</span>Merhaba Web<span style="color:#1e51cb">&lt;/h1&gt;</span>
+<span style="color:#1e51cb">&lt;div</span> <span style="color:#7a3a8c">class</span>=<span style="color:#1b6e3a">"kart"</span><span style="color:#1e51cb">&gt;&lt;/div&gt;</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:14px;font-weight:700;color:#344350">Etiket denetleyici</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <span style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#1b6e3a;background:#e6f4ea;border-radius:999px;padding:5px 12px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1b6e3a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>h1</span>
+              <span style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#1b6e3a;background:#e6f4ea;border-radius:999px;padding:5px 12px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1b6e3a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>div</span>
+              <span style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#1b6e3a;background:#e6f4ea;border-radius:999px;padding:5px 12px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1b6e3a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>p</span>
+              <span style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#a02018;background:#fdecea;border-radius:999px;padding:5px 12px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a02018" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>ul · eksik</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <label for="puan" style="font-size:14px;font-weight:700;color:#344350">Puan</label>
+            <input id="puan" type="text" inputmode="numeric" value="75" style="height:48px;box-sizing:border-box;padding:0 14px;border:1px solid #9fb0cc;border-radius:10px;font-size:16px;color:#22252f;width:140px">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <label for="yorum" style="font-size:14px;font-weight:700;color:#344350">Yorum</label>
+            <textarea id="yorum" rows="3" placeholder="Öğrenciye kısa bir geri bildirim yaz..." style="box-sizing:border-box;padding:12px 14px;border:1px solid #9fb0cc;border-radius:10px;font-size:15px;line-height:1.5;color:#22252f;resize:vertical"></textarea>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button type="button" style="min-height:48px;padding:0 24px;border-radius:10px;border:0;background:#112e6e;color:#fff;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:15px">Notu kaydet</button>
+            <button type="button" style="min-height:48px;padding:0 20px;border-radius:10px;border:1px solid #112e6e;background:#fff;color:#112e6e;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:15px">Sonraki teslim</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+  <footer style="margin-top:auto;background:#fff;border-top:1px solid #e6ebef">
+    <div style="padding:40px 40px 24px;display:flex;flex-wrap:wrap;gap:32px">
+      <div style="flex:1.4 1 280px;display:flex;flex-direction:column;gap:12px">
+        <span style="display:flex;align-items:center;gap:12px"><span style="width:40px;height:40px;border-radius:10px;background:#112e6e;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px">ABÜ</span><span style="font-weight:800;font-size:16px;color:#112e6e">CENG 361 Lab</span></span>
+        <span style="font-size:14px;line-height:1.6;color:#526179;max-width:340px">Web Programlama dersi için ödev ve konu anlatımı platformu. Pilot sürüm.</span>
+      </div>
+      <div style="flex:1 1 160px;display:flex;flex-direction:column;gap:8px"><h4 style="margin:0 0 4px;font-size:14px;font-weight:600;color:#22252f">Ders</h4><a href="Ders.dc.html" style="font-size:14px;color:#1e51cb;text-decoration:none;padding:4px 0">Ders sayfası</a><a href="Konular.dc.html" style="font-size:14px;color:#1e51cb;text-decoration:none;padding:4px 0">Konular</a><a href="Odevler.dc.html" style="font-size:14px;color:#1e51cb;text-decoration:none;padding:4px 0">Ödevler</a></div>
+      <div style="flex:1 1 160px;display:flex;flex-direction:column;gap:8px"><h4 style="margin:0 0 4px;font-size:14px;font-weight:600;color:#22252f">Öğretim üyesi</h4><a href="OdevOlustur.dc.html" style="font-size:14px;color:#1e51cb;text-decoration:none;padding:4px 0">Ödev oluştur</a><a href="Teslimler.dc.html" style="font-size:14px;color:#1e51cb;text-decoration:none;padding:4px 0">Teslimler</a></div>
+      <div style="flex:1 1 160px;display:flex;flex-direction:column;gap:8px"><h4 style="margin:0 0 4px;font-size:14px;font-weight:600;color:#22252f">Okul</h4><a href="https://ankarabilim.edu.tr" style="font-size:14px;color:#1e51cb;text-decoration:none;padding:4px 0">Ankara Bilim Üniversitesi</a></div>
+    </div>
+    <div style="padding:16px 40px 24px;border-top:1px solid #e6ebef;font-size:13px;color:#526179">© 2026 CENG 361 Lab · Ders projesi. Ankara Bilim Üniversitesi'nin resmî web sitesi değildir.</div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1430}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

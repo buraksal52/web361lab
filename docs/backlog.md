@@ -89,11 +89,11 @@ Status values: `todo`, `in progress`, `done`, `blocked`.
 | ID | Item | Refs | Status |
 |---|---|---|---|
 | S7-01 | Criteria model and UI: automatic criteria from checker rules, manual criteria added by the instructor, maximum points | FR-19, ADR-14 | done |
-| S7-02 | Suggested score calculation | FR-19, NFR-09 | todo |
-| S7-03 | Instructor evaluation panel: change automatic results, score manual criteria, enter final score and feedback | FR-19, UC-07 | todo |
-| S7-04 | CSV export of grades | FR-20 | todo |
-| S7-05 | Show criteria to students (instructor's choice) | FR-21, UC-08 | todo |
-| S7-06 | Tests for score calculation and CSV | FR-19, FR-20 | todo |
+| S7-02 | Suggested score calculation | FR-19, NFR-09 | in progress |
+| S7-03 | Instructor evaluation panel: change automatic results, score manual criteria, enter final score and feedback | FR-19, UC-07 | in progress |
+| S7-04 | CSV export of grades | FR-20 | in progress |
+| S7-05 | Show criteria to students (instructor's choice) | FR-21, UC-08 | in progress |
+| S7-06 | Tests for score calculation and CSV | FR-19, FR-20 | in progress |
 
 ## S8: Polish + demo
 

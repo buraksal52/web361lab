@@ -46,6 +46,7 @@ class Assignment(Base):
     checker_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
     check_rules: Mapped[list] = mapped_column(JSON, default=list)
     show_results_to_student: Mapped[bool] = mapped_column(Boolean, default=False)
+    show_criteria_to_student: Mapped[bool] = mapped_column(Boolean, default=False)
     diagnostics_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
     lint_rules: Mapped[list] = mapped_column(JSON, default=list)
     due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
@@ -106,3 +107,29 @@ class Submission(Base):
     locked: Mapped[bool] = mapped_column(Boolean, default=True)
     check_result: Mapped[list | None] = mapped_column(JSON, nullable=True)
     lint_report: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    rubric_snapshot: Mapped[list | None] = mapped_column(JSON, nullable=True)
+
+
+class Evaluation(Base):
+    __tablename__ = 'evaluations'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    submission_id: Mapped[int] = mapped_column(ForeignKey('submissions.id'), unique=True)
+    suggested_points: Mapped[Decimal] = mapped_column(Numeric(12, 2))
+    final_points: Mapped[Decimal] = mapped_column(Numeric(12, 2))
+    feedback: Mapped[str] = mapped_column(Text)
+    graded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    source_submitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    criteria_snapshot: Mapped[list] = mapped_column(JSON)
+    results: Mapped[list['CriterionResult']] = relationship(cascade='all, delete-orphan', order_by='CriterionResult.position')
+
+
+class CriterionResult(Base):
+    __tablename__ = 'criterion_results'
+    __table_args__ = (UniqueConstraint('evaluation_id', 'criterion_id'),)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    evaluation_id: Mapped[int] = mapped_column(ForeignKey('evaluations.id'))
+    criterion_id: Mapped[str] = mapped_column(String(36))
+    auto_result: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    teacher_override: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    points: Mapped[Decimal] = mapped_column(Numeric(10, 2))
+    position: Mapped[int] = mapped_column(Integer)
