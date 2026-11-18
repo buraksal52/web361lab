@@ -52,3 +52,6 @@ All decisions are draft v0.3 except where explicitly confirmed. ADR-08 and ADR-0
 
 **ADR-17: Server-side static checker.**
 *Decision:* Run the optional HTML checker on the server at submission, using a bounded static parser; never execute student code. Enforce input-size and execution-time limits. *Why:* Rules and results must remain hidden from students unless the instructor enables visibility; browser-side checking would disclose the rules to the student's browser. *Consequence:* The server stores results with their rule snapshot and applies authorization on every response. This replaces the S5 browser `DOMParser` choice.
+
+**ADR-18: Writing-check tools.**
+*Decision:* Use HTMLHint, CSSTree, ESLint and Prettier for static writing checks. Run submission analysis as a bounded local Node subprocess; no student code is executed or sent externally. *Why:* The S6 feasibility check showed that ESLint did not directly bundle for the browser, and server-side analysis keeps the report authoritative. *Consequence:* Node is required at runtime for submissions. Ignore source-level linter directives, report syntax errors as errors and other enabled rules as warnings, and retain the Turkish message table with raw fallback.

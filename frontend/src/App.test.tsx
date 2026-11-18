@@ -9,6 +9,9 @@ vi.mock('monaco-editor/editor/editor.worker.js?worker', () => ({ default: class 
 vi.mock('monaco-editor/language/html/html.worker.js?worker', () => ({ default: class {} }))
 vi.mock('monaco-editor/language/css/css.worker.js?worker', () => ({ default: class {} }))
 vi.mock('monaco-editor/language/typescript/ts.worker.js?worker', () => ({ default: class {} }))
+vi.mock('monaco-editor/languages/features/typescript/register.js', () => ({ javascriptDefaults: { setDiagnosticsOptions: () => {} } }))
+vi.mock('monaco-editor/languages/features/css/register.js', () => ({ cssDefaults: { setDiagnosticsOptions: () => {} } }))
+vi.mock('monaco-editor/languages/features/html/register.js', () => ({ htmlDefaults: { modeConfiguration: {}, setModeConfiguration: () => {} } }))
 vi.mock('@monaco-editor/react', () => ({
   default: ({ options }: { options: { quickSuggestions: boolean; suggestOnTriggerCharacters: boolean } }) => (
     <div data-quick-suggestions={String(options.quickSuggestions)} data-trigger-suggestions={String(options.suggestOnTriggerCharacters)} />

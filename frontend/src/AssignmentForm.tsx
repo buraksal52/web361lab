@@ -1,6 +1,7 @@
 import type { Assignment } from './api'
 import type { Language } from './Editor'
 import { CheckerRules } from './CheckerRules'
+import { WritingRules } from './WritingRules'
 
 type Props = {
   assignment: Assignment
@@ -39,6 +40,8 @@ export function AssignmentForm({ assignment, onChange, onSave, onCancel }: Props
     </label>)}
     <label><input type="checkbox" checked={assignment.intellisense_enabled} onChange={(event) => update('intellisense_enabled', event.target.checked)} /> IntelliSense etkin</label>
     <label><input type="checkbox" checked={assignment.paste_enabled} onChange={(event) => update('paste_enabled', event.target.checked)} /> Dışarıdan yapıştırma etkin</label>
+    <label><input type="checkbox" checked={assignment.diagnostics_enabled} onChange={(event) => update('diagnostics_enabled', event.target.checked)} /> Editörde canlı hata gösterimi etkin</label>
+    <WritingRules rules={assignment.lint_rules ?? []} onChange={(rules) => update('lint_rules', rules)} />
     <label><input type="checkbox" checked={assignment.checker_enabled} onChange={(event) => update('checker_enabled', event.target.checked)} /> Öğe kullanım kontrolü etkin</label>
     {assignment.checker_enabled && <>
       <CheckerRules rules={assignment.check_rules ?? []} onChange={(rules) => update('check_rules', rules)} />

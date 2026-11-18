@@ -158,7 +158,7 @@ export function StudentWorkspace({ assignment, token, userId }: Props) {
     {locked && checkResults !== null && assignment.checker_enabled && assignment.show_results_to_student && <CheckResults results={checkResults} />}
     {files && !locked && !submitting && <div className="workspace">
       <Editor enabledLanguages={assignment.enabled_languages} files={files} onChange={change}
-        intellisenseEnabled={assignment.intellisense_enabled} pasteEnabled={assignment.paste_enabled}
+        intellisenseEnabled={assignment.intellisense_enabled} diagnosticsEnabled={assignment.diagnostics_enabled} pasteEnabled={assignment.paste_enabled}
         modelNamespace={`student-${userId}-assignment-${assignment.id}`}
         onPasteBlocked={() => record('paste_blocked', {})} />
       <Preview files={files} enabledLanguages={assignment.enabled_languages} />

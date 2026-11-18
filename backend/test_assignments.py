@@ -172,3 +172,42 @@ def test_checker_off_does_not_produce_result(client, monkeypatch):
     submission = client.post(f'/assignments/{assignment_id}/submit', headers=student, json={'html': '', 'css': '', 'javascript': ''})
     assert submission.status_code == 200
     assert 'check_result' not in client.get(f"/submissions/{submission.json()['id']}", headers=teacher).json()
+
+
+def test_writing_report_is_teacher_only_and_diagnostics_are_independent(client):
+    teacher, student, other = auth(client, 1), auth(client, 2), auth(client, 4)
+    assignment = {'course_id': 1, 'title': 'Yazım', 'enabled_languages': ['html'],
+                  'starter_code': {'html': '<img>', 'css': '', 'javascript': ''},
+                  'diagnostics_enabled': True, 'intellisense_enabled': False,
+                  'lint_rules': ['html_alt'], 'show_results_to_student': True}
+    created = client.post('/assignments', headers=teacher, json=assignment)
+    assert created.status_code == 201
+    assignment_id = created.json()['id']
+    student_assignment = client.get(f'/assignments/{assignment_id}', headers=student).json()
+    assert student_assignment['diagnostics_enabled'] is True
+    assert student_assignment['intellisense_enabled'] is False
+    assert 'lint_rules' not in student_assignment
+    client.post('/me/recording-consent', headers=student)
+    client.post(f'/assignments/{assignment_id}/draft', headers=student)
+    result = client.post(f'/assignments/{assignment_id}/submit', headers=student, json=assignment['starter_code'])
+    assert result.status_code == 200
+    url = f"/submissions/{result.json()['id']}"
+    report = client.get(url, headers=teacher).json()['lint_report']
+    assert [item['rule'] for item in report] == ['alt-require']
+    assert report[0]['message'] == 'Görsel için alt açıklaması ekleyin.'
+    assert 'lint_report' not in client.get(url, headers=student).json()
+    assert client.get(url, headers=other).status_code == 403
+
+
+def test_writing_check_failure_does_not_submit(client, monkeypatch):
+    teacher, student = auth(client, 1), auth(client, 2)
+    assignment = {'course_id': 1, 'title': 'Yazım', 'enabled_languages': ['html'], 'lint_rules': ['html_alt']}
+    assignment_id = client.post('/assignments', headers=teacher, json=assignment).json()['id']
+    client.post('/me/recording-consent', headers=student)
+    client.post(f'/assignments/{assignment_id}/draft', headers=student)
+    def fail(*_args):
+        raise RuntimeError('timeout')
+    monkeypatch.setattr('submissions.run_writing_checks', fail)
+    response = client.post(f'/assignments/{assignment_id}/submit', headers=student, json={'html': '', 'css': '', 'javascript': ''})
+    assert response.status_code == 503
+    assert client.get(f'/assignments/{assignment_id}/submissions', headers=teacher).json() == []

@@ -16,4 +16,6 @@ Bundle sizes from the local unminified smoke test were approximately 100 KiB (HT
 
 Recommend HTMLHint, CSSTree, ESLint and optionally Prettier, subject to owner approval. The exact handling of HTML inline directives and `i`/`b` must be verified before implementation is considered complete. ESLint and Stylelint require a different integration from a straightforward browser bundle; a bounded local Node subprocess is an option permitted by ADR-13, but its deployment/runtime consequences need approval. No source code should be executed and no student data sent to external services.
 
+The owner approved HTMLHint, CSSTree, ESLint and Prettier with the bounded local Node subprocess for S6. See ADR-18 for the adopted design.
+
 Sources: [HTMLHint rules](https://www.htmlhint.com/rules/), [HTMLHint inline configuration](https://htmlhint.com/configuration/), [CSSTree](https://github.com/csstree/csstree), [ESLint Node API](https://eslint.org/docs/latest/integrate/nodejs-api), [Prettier browser documentation](https://prettier.io/docs/browser/).

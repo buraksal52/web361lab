@@ -1,10 +1,13 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import MonacoEditor, { loader } from '@monaco-editor/react'
 import * as monaco from 'monaco-editor'
 import EditorWorker from 'monaco-editor/editor/editor.worker.js?worker'
 import HtmlWorker from 'monaco-editor/language/html/html.worker.js?worker'
 import CssWorker from 'monaco-editor/language/css/css.worker.js?worker'
 import TsWorker from 'monaco-editor/language/typescript/ts.worker.js?worker'
+import { javascriptDefaults } from 'monaco-editor/languages/features/typescript/register.js'
+import { cssDefaults } from 'monaco-editor/languages/features/css/register.js'
+import { htmlDefaults } from 'monaco-editor/languages/features/html/register.js'
 
 if (typeof self !== 'undefined') self.MonacoEnvironment = {
   getWorker(_workerId, label) {
@@ -31,17 +34,24 @@ type EditorProps = {
   files: CodeFiles
   onChange: (language: Language, value: string, event: monaco.editor.IModelContentChangedEvent) => void
   intellisenseEnabled: boolean
+  diagnosticsEnabled?: boolean
   pasteEnabled?: boolean
   onPasteBlocked?: () => void
   modelNamespace?: string
 }
 
-export function Editor({ enabledLanguages, files, onChange, intellisenseEnabled, pasteEnabled = true, onPasteBlocked, modelNamespace = 'assignment' }: EditorProps) {
+export function Editor({ enabledLanguages, files, onChange, intellisenseEnabled, diagnosticsEnabled = false, pasteEnabled = true, onPasteBlocked, modelNamespace = 'assignment' }: EditorProps) {
   const [selected, setSelected] = useState<Language | undefined>(enabledLanguages[0])
   const [notice, setNotice] = useState('')
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
   const internalClipboard = useRef<string | null>(null)
   const active = selected && enabledLanguages.includes(selected) ? selected : enabledLanguages[0]
+
+  useEffect(() => {
+    javascriptDefaults.setDiagnosticsOptions({ noSemanticValidation: !diagnosticsEnabled, noSyntaxValidation: !diagnosticsEnabled })
+    cssDefaults.setDiagnosticsOptions({ validate: diagnosticsEnabled })
+    htmlDefaults.setModeConfiguration({ ...htmlDefaults.modeConfiguration, diagnostics: diagnosticsEnabled })
+  }, [diagnosticsEnabled])
 
   if (!active) return <p>Bu ödevde etkin bir kod sekmesi yok.</p>
 

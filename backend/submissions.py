@@ -10,6 +10,7 @@ from identity import current_user, require_enrollment
 from models import Assignment, Draft, ReplayEvent, Submission, User
 from schemas import CodeFiles
 from checker import run_checker
+from writing_checks import run_writing_checks
 
 router = APIRouter()
 
@@ -41,15 +42,24 @@ def submit(assignment_id: int, code: CodeFiles, user: User = Depends(current_use
             raise HTTPException(413, str(error)) from error
         except (TimeoutError, RuntimeError, EOFError) as error:
             raise HTTPException(503, 'HTML kontrolü tamamlanamadı. Lütfen tekrar deneyin.') from error
+    lint_report = None
+    if assignment.lint_rules:
+        try:
+            lint_report = run_writing_checks(draft.code, assignment.lint_rules)
+        except ValueError as error:
+            raise HTTPException(413, str(error)) from error
+        except RuntimeError as error:
+            raise HTTPException(503, 'Yazım kontrolü tamamlanamadı. Lütfen tekrar deneyin.') from error
     now = datetime.now(timezone.utc)
     if submission is None:
-        submission = Submission(assignment_id=assignment_id, student_id=user.id, final_code=draft.code, submitted_at=now, locked=True, check_result=check_result)
+        submission = Submission(assignment_id=assignment_id, student_id=user.id, final_code=draft.code, submitted_at=now, locked=True, check_result=check_result, lint_report=lint_report)
         db.add(submission)
     else:
         submission.final_code = draft.code
         submission.submitted_at = now
         submission.locked = True
         submission.check_result = check_result
+        submission.lint_report = lint_report
     started = draft.started_at if draft.started_at.tzinfo else draft.started_at.replace(tzinfo=timezone.utc)
     elapsed = min(2147483647, max(0, int((now - started).total_seconds() * 1000)))
     db.add(ReplayEvent(draft_id=draft.id, t_ms=elapsed, kind='submit', payload={}))
@@ -81,6 +91,8 @@ def get_submission(submission_id: int, user: User = Depends(current_user), db: S
     if assignment.checker_enabled and (enrollment.role == 'teacher' or assignment.show_results_to_student):
         if submission.check_result is not None:
             result['check_result'] = submission.check_result
+    if enrollment.role == 'teacher' and submission.lint_report is not None:
+        result['lint_report'] = submission.lint_report
     return result
 
 

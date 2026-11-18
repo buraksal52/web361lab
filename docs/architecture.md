@@ -102,6 +102,7 @@ The rule set consists of groups the instructor can turn on or off per assignment
 | JS | Syntax errors, `===` instead of `==`, unused variable, undefined variable |
 | Format | Consistent indentation |
 
-- Candidate tools: `html-validate` or `HTMLHint` (HTML), a CSS parser or `stylelint` (CSS), `acorn` + `ESLint` (JS), `Prettier` (format). Whether each works in the browser is verified by a **feasibility check at the start of S6**. A tool that does not work in the browser runs as static analysis on the server (code is not executed, with size and time limits). Tool choice is put to the owner for approval.
+- Selected in S6: HTMLHint, CSSTree, ESLint and Prettier. At submission, a local Node subprocess performs static analysis with a 256 KiB total input limit and an eight-second deadline; it never executes student code or sends it externally. The report is visible only to the course instructor. Inline directives cannot change the instructor's chosen rules. HTML, CSS and JavaScript tabs are checked; embedded style and script blocks are checked as HTML locations.
+- Monaco's built-in live diagnostics are independently configured per assignment and are not the submission linter. Formatting checks use Prettier for HTML/CSS indentation where lines can be compared and ESLint for JavaScript indentation; they are observations rather than automatic code changes.
 - Messages: the 20-30 most common errors get a plain Turkish explanation. A message not in the table is shown raw.
 - `<em>` / `<i>` example: the linter flags `<i>` usage. Deciding "is emphasis meant here, or is it only italics" is not rule-based; it belongs to the instructor (and to the comment layer in Phase 2).

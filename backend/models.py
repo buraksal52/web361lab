@@ -44,6 +44,8 @@ class Assignment(Base):
     checker_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
     check_rules: Mapped[list] = mapped_column(JSON, default=list)
     show_results_to_student: Mapped[bool] = mapped_column(Boolean, default=False)
+    diagnostics_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    lint_rules: Mapped[list] = mapped_column(JSON, default=list)
     due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
@@ -89,3 +91,4 @@ class Submission(Base):
     submitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     locked: Mapped[bool] = mapped_column(Boolean, default=True)
     check_result: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    lint_report: Mapped[list | None] = mapped_column(JSON, nullable=True)

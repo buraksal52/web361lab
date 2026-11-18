@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 Language = Literal['html', 'css', 'javascript']
 HtmlTag = Literal['a', 'article', 'button', 'div', 'footer', 'form', 'h1', 'h2', 'h3', 'header', 'img', 'input', 'label', 'li', 'main', 'nav', 'ol', 'option', 'p', 'section', 'select', 'span', 'table', 'tbody', 'td', 'textarea', 'th', 'thead', 'tr', 'ul']
+LintRule = Literal['html_tag_pair', 'html_id_unique', 'html_alt', 'html_doctype', 'html_presentational', 'css_syntax', 'css_unknown_property', 'css_invalid_value', 'js_syntax', 'js_eqeqeq', 'js_unused', 'js_undef', 'indentation']
 
 
 class CheckRule(BaseModel):
@@ -51,6 +52,8 @@ class AssignmentInput(BaseModel):
     checker_enabled: bool = False
     check_rules: list[CheckRule] = Field(default_factory=list, max_length=100)
     show_results_to_student: bool = False
+    diagnostics_enabled: bool = False
+    lint_rules: list[LintRule] = Field(default_factory=list, max_length=13)
     due_at: datetime | None = None
 
     @field_validator('check_rules')
@@ -65,6 +68,7 @@ class AssignmentOut(AssignmentInput):
     model_config = ConfigDict(from_attributes=True)
     id: int
     check_rules: list[CheckRule] | None = None
+    lint_rules: list[LintRule] | None = None
 
 
 class EditChange(BaseModel):

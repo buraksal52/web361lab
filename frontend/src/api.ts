@@ -4,6 +4,7 @@ export type User = { id: number; name: string; role: string }
 export type Course = { id: number; name: string; role: string }
 export type CheckRule = { id: string; tag: string; attrs: Record<string, string>; min_count: number; non_empty: boolean; inside: string | null; label_linked: boolean }
 export type CheckResult = { rule: CheckRule; count: number; used: boolean }
+export type LintIssue = { language: string; rule: string; message: string; raw_message: string; line: number; column: number; severity: 'error' | 'warning' }
 export type Assignment = {
   id: number
   course_id: number
@@ -17,6 +18,8 @@ export type Assignment = {
   checker_enabled: boolean
   check_rules?: CheckRule[]
   show_results_to_student: boolean
+  diagnostics_enabled: boolean
+  lint_rules?: string[]
   due_at: string | null
 }
 

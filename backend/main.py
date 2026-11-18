@@ -51,6 +51,8 @@ def assignment_response(assignment: Assignment, role: str):
     result = AssignmentOut.model_validate(assignment).model_dump()
     if role != 'teacher' and not assignment.show_results_to_student:
         result['check_rules'] = None
+    if role != 'teacher':
+        result['lint_rules'] = None
     return result
 
 

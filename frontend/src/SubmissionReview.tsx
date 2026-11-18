@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Preview } from './Preview'
 import { ReplayPlayer, type ReplayEvent } from './ReplayPlayer'
-import { request, type Assignment, type CheckResult } from './api'
+import { request, type Assignment, type CheckResult, type LintIssue } from './api'
+import { WritingReport } from './WritingReport'
 import { CheckResults } from './CheckResults'
 import type { CodeFiles } from './Editor'
 
-type Submission = { id: number; student_id: number; student_name: string; submitted_at: string; locked: boolean; final_code: CodeFiles; check_result?: CheckResult[] }
+type Submission = { id: number; student_id: number; student_name: string; submitted_at: string; locked: boolean; final_code: CodeFiles; check_result?: CheckResult[]; lint_report?: LintIssue[] }
 type Replay = { initial_code: CodeFiles; events: ReplayEvent[]; signals: { paste_blocked_count: number; blur_count: number; max_insert_chars: number } }
 
 export function SubmissionReview({ assignment, token }: { assignment: Assignment; token: string }) {
@@ -57,6 +58,7 @@ export function SubmissionReview({ assignment, token }: { assignment: Assignment
       {assignment.enabled_languages.map((language) => <section key={language}><h5>{language.toUpperCase()}</h5><pre>{selected.final_code[language]}</pre></section>)}
       <Preview files={selected.final_code} enabledLanguages={assignment.enabled_languages} />
       {assignment.checker_enabled && selected.check_result !== undefined && <CheckResults results={selected.check_result} />}
+      {selected.lint_report !== undefined && <WritingReport issues={selected.lint_report} />}
       <h4>Gözlemler</h4>
       <p>Engellenen yapıştırma: {replay.signals.paste_blocked_count}</p>
       <p>Sekme veya pencere odağı kaybı: {replay.signals.blur_count}</p>
